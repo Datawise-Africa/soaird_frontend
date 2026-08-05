@@ -14,7 +14,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 20
       - name: Enable Corepack
@@ -33,7 +33,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 20
       - name: Enable Corepack
@@ -55,7 +55,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 20
       - name: Enable Corepack
