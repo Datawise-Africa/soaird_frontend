@@ -1,0 +1,24 @@
+
+#!/usr/bin/env sh
+
+# Try running lint-staged directly (works if it's on PATH via npx, local bin, etc.)
+if command -v lint-staged > /dev/null 2>&1; then
+  if ! lint-staged; then
+    echo "lint-staged failed. Please fix the issues before committing."
+    exit 1
+  fi
+  exit 0
+fi
+
+# Fall back to pnpm lint-staged
+PNPM_PATH=$(which pnpm 2>/dev/null)
+if [ -n "$PNPM_PATH" ]; then
+  if ! "$PNPM_PATH" lint-staged; then
+    echo "pnpm lint-staged failed. Please fix the issues before committing."
+    exit 1
+  fi
+  exit 0
+fi
+
+echo "Neither lint-staged nor pnpm is available. Please install one to use this pre-commit hook."
+exit 1

@@ -1,0 +1,122 @@
+name: PR Validation Workflow
+
+on:
+  pull_request:
+    branches:
+      - main
+      - dev
+
+jobs:
+  lint_code:
+    name: Lint Code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install dependencies
+        run: pnpm install
+      - name: Run ESLint
+        run: pnpm lint
+
+  security_scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Export Session Secret
+        run: echo "SESSION_SECRET=$(openssl rand -base64 32)" >> $GITHUB_ENV
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install dependencies
+        run: pnpm install
+      - name: Run Build
+        run: pnpm build
+    env:
+      CI: true
+
+  sonarqube:
+    name: SonarQube Analysis
+    runs-on: ubuntu-latest
+    needs: [lint_code]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install dependencies
+        run: pnpm install
+      - name: Run tests with coverage
+        run: pnpm test:coverage
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+  pr_notification:
+    name: PR Checks Notification
+    runs-on: ubuntu-latest
+    needs: [lint_code, security_scan, sonarqube]
+    if: always()
+    steps:
+      - name: Checkout code
+        if: github.event.action == 'synchronize'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 1
+      - name: Get latest commit message
+        if: github.event.action == 'synchronize'
+        id: commit_msg
+        env:
+          GIT_LOG_FORMAT: '%s'
+        run: echo "message=$(git log -1 --pretty=format:"$GIT_LOG_FORMAT")" >> "$GITHUB_OUTPUT"
+      - name: Send Slack Notification
+        uses: slackapi/slack-github-action@v1.23.0
+        with:
+          payload: |
+            {
+              "channel": "code-reviews",
+              "text": ":bell: *${{ github.event.action == 'opened' && 'New PR' || github.event.action == 'reopened' && 'Reopened PR' || 'New commit pushed to PR' }}* from `${{ github.event.pull_request.head.ref }}` to `${{ github.event.pull_request.base.ref }}` by `${{ github.actor }}`\n*PR Title:* `${{ github.event.pull_request.title }}`${{ github.event.action == 'synchronize' && format('\n*Latest Commit:* `{0}`', steps.commit_msg.outputs.message) || '' }}\n<${{ github.event.pull_request.html_url }}|View Pull Request>",
+              "attachments": [
+                {
+                  "color": "#36a64f",
+                  "fields": [
+                    {
+                      "title": "Source Branch",
+                      "value": "${{ github.event.pull_request.head.ref }}",
+                      "short": true
+                    },
+                    {
+                      "title": "Target Branch",
+                      "value": "${{ github.event.pull_request.base.ref }}",
+                      "short": true
+                    },
+                    {
+                      "title": "Author",
+                      "value": "${{ github.event.pull_request.user.login }}",
+                      "short": true
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

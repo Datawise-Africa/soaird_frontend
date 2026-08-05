@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+build/
+.react-router/
+
+# Cache
+.vite/
+.turbo/
+
+# Lock files
+pnpm-lock.yaml
+
+# Coverage
+coverage/
+
+# Env files
+.env
+.env.*
+
+# Generated
+*.d.ts.map
+*.js.map
+*.css.map
+*.tsbuildinfo
+
+# Assets
+public/
+
+# Husky
+.husky/
