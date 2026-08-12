@@ -28,6 +28,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 }
 
 export const links: Route.LinksFunction = () => [
+  { rel: 'icon', type: 'image/png', href: '/favicon.png' },
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
   {
     rel: 'preconnect',
