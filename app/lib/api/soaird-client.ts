@@ -85,6 +85,12 @@ export type DatasetImportJob = {
   sheet_name: string;
   status: 'previewed' | 'pending' | 'running' | 'completed' | 'failed';
   summary: {
+    automation_status:
+      | 'not_started'
+      | 'queued'
+      | 'running'
+      | 'completed'
+      | 'failed';
     total?: number;
     valid?: number;
     invalid?: number;
@@ -204,7 +210,19 @@ export type AssessmentSource = {
     | 'documentation'
     | 'licence'
     | 'publication'
+    | 'collection_methodology'
+    | 'preprocessing'
+    | 'provenance'
+    | 'consent_privacy'
+    | 'governance'
+    | 'security'
+    | 'version_history'
+    | 'community_review'
+    | 'institutional_capacity'
+    | 'sustainability'
+    | 'experiment_results'
     | 'other';
+  ingestion_mode: 'upload' | 'reference' | 'import_url';
   original_filename: string;
   source_uri: string;
   content_type: string;
@@ -254,7 +272,15 @@ export type MetricSuggestion = {
 export type MetricInputField = {
   name: string;
   label: string;
-  type: 'text' | 'textarea' | 'select';
+  type:
+    | 'text'
+    | 'textarea'
+    | 'select'
+    | 'number'
+    | 'date'
+    | 'url'
+    | 'boolean'
+    | 'tags';
   required: boolean;
   options?: Array<{ value: string; label: string }>;
 };
@@ -264,6 +290,10 @@ export type MetricInputRequirement = {
   label: string;
   description: string;
   fields: MetricInputField[];
+  delivery_modes?: Array<
+    'structured' | 'upload' | 'import_url' | 'reference_url' | 'text'
+  >;
+  source_type?: AssessmentSource['source_type'];
 };
 
 export type AssessmentInput = {
@@ -320,6 +350,10 @@ export type QuestionnaireMetric = {
   status: string;
   explanation: string;
   question: string;
+  methodology: {
+    formula: string;
+    checks: Array<{ key: string; label: string; weight: number }>;
+  };
   required_inputs: string[];
   input_requirements: MetricInputRequirement[];
   provided_inputs: Record<string, AssessmentInput>;
@@ -358,12 +392,17 @@ export type AssessmentQuestionnaire = {
     ready_for_review: number;
     missing_input: number;
     accepted: number;
+    resolved: number;
+    unresolved: number;
+    scoring_coverage_percentage: number;
+    can_finalize: boolean;
     automation_complete: boolean;
   };
   metrics: QuestionnaireMetric[];
 };
 
 export type AssessmentReport = {
+  report_state: 'provisional' | 'final';
   assessment: {
     run_id: string;
     assessment_code: string;
@@ -375,10 +414,23 @@ export type AssessmentReport = {
     completed_at: string | null;
   };
   summary: {
+    automation_status:
+      | 'not_started'
+      | 'queued'
+      | 'running'
+      | 'completed'
+      | 'failed';
     composite_score: number | null;
     assessment_completion: number | null;
     evidence_coverage: number | null;
     metric_count: number;
+    applicable_metric_count: number;
+    scored_metric_count: number;
+    scoring_coverage: number;
+    minimum_scoring_coverage: number;
+    composite_publishable: boolean;
+    score_warning: string;
+    unresolved_metric_count: number;
   };
   pillars: Array<{
     pillar_code: string;
@@ -396,10 +448,37 @@ export type AssessmentReport = {
     explanation: string;
     recommendations: string[];
   }>;
+  insights: {
+    overview: string;
+    outcome_counts: {
+      meets: number;
+      partially_meets: number;
+      does_not_meet: number;
+      insufficient_evidence: number;
+      unresolved: number;
+      not_applicable: number;
+    };
+    strengths: Array<{
+      pillar_code: string;
+      pillar_name: string;
+      score: number;
+      interpretation: string;
+    }>;
+    priority_gaps: Array<{
+      pillar_code: string;
+      pillar_name: string;
+      score: number;
+      interpretation: string;
+    }>;
+  };
 };
 
 type DistributionSummary = {
+  count: number;
+  mean: number | null;
   median: number | null;
+  minimum: number | null;
+  maximum: number | null;
 };
 
 export type CohortAnalytics = {
@@ -408,6 +487,13 @@ export type CohortAnalytics = {
     completed_assessments: number;
     assessment_completion: DistributionSummary;
     evidence_coverage: DistributionSummary;
+    readiness: DistributionSummary;
+    readiness_distribution: {
+      highly_ready: number;
+      moderately_ready: number;
+      emerging: number;
+      limited_readiness: number;
+    };
   };
   cohorts: Array<{
     country?: string;
@@ -417,6 +503,18 @@ export type CohortAnalytics = {
     count: number;
     suppressed: boolean;
     statistics: DistributionSummary | null;
+  }>;
+  pillars: Array<{
+    pillar_code: string;
+    groups: Array<{
+      country?: string;
+      region?: string;
+      domain?: string;
+      modality?: string;
+      count: number;
+      suppressed: boolean;
+      statistics: DistributionSummary | null;
+    }>;
   }>;
 };
 
@@ -597,12 +695,15 @@ export const api = {
       source_type: AssessmentSource['source_type'];
       file?: File;
       source_uri?: string;
+      ingestion_mode?: AssessmentSource['ingestion_mode'];
     }
   ) {
     const body = new FormData();
     body.append('source_type', input.source_type);
     if (input.file) body.append('file', input.file);
     if (input.source_uri) body.append('source_uri', input.source_uri);
+    if (input.ingestion_mode)
+      body.append('ingestion_mode', input.ingestion_mode);
     return post<AssessmentSource>(
       `/api/v1/assessments/${encodeURIComponent(assessmentCode)}/sources/`,
       body
@@ -618,6 +719,13 @@ export const api = {
   acceptMetricSuggestion(metricId: string) {
     return post<Record<string, unknown>>(
       `/api/v1/metric-results/${encodeURIComponent(metricId)}/accept-suggestion/`
+    );
+  },
+
+  markInformationUnavailable(metricId: string, reason: string) {
+    return post<MetricAnswer>(
+      `/api/v1/metric-results/${encodeURIComponent(metricId)}/information-unavailable/`,
+      { reason }
     );
   },
 
@@ -651,7 +759,7 @@ export const api = {
 
   provideMetricInputs(
     metricId: string,
-    inputs: Record<string, Record<string, string>>
+    inputs: Record<string, Record<string, unknown>>
   ) {
     return post<{
       status: string;
@@ -683,14 +791,17 @@ export const api = {
     );
   },
 
-  reportExportUrl(runId: string, format: 'json' | 'csv') {
+  reportExportUrl(runId: string, format: 'json' | 'csv' | 'xlsx') {
     const base = env.VITE_API_BASE_URL.replace(/\/$/, '');
     return `${base}/api/v1/reporting/assessment-runs/${encodeURIComponent(
       runId
     )}/export/?format=${format}`;
   },
 
-  async downloadAssessmentReport(runId: string, format: 'json' | 'csv') {
+  async downloadAssessmentReport(
+    runId: string,
+    format: 'json' | 'csv' | 'xlsx'
+  ) {
     try {
       const response = await apiClient.get(
         `/api/v1/reporting/assessment-runs/${encodeURIComponent(runId)}/export/?format=${format}`,

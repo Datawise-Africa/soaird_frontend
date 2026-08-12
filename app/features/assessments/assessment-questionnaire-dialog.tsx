@@ -44,9 +44,11 @@ import {
   assessmentSourceResolver,
   metricAnswerResolver,
   metricInputResolver,
+  informationUnavailableResolver,
   type AssessmentSourceFormInput,
   type MetricAnswerFormInput,
   type MetricInputFormInput,
+  type InformationUnavailableFormInput,
 } from '~/lib/schema/questionnaire.schema';
 import { toastUtils } from '~/lib/utils/toast';
 
@@ -68,6 +70,17 @@ const SOURCE_TYPES = [
   { value: 'documentation', label: 'README or methodology' },
   { value: 'licence', label: 'Licence' },
   { value: 'publication', label: 'Publication or report' },
+  { value: 'collection_methodology', label: 'Collection methodology' },
+  { value: 'preprocessing', label: 'Preprocessing evidence' },
+  { value: 'provenance', label: 'Provenance or lineage' },
+  { value: 'consent_privacy', label: 'Consent and privacy' },
+  { value: 'governance', label: 'Governance and sovereignty' },
+  { value: 'security', label: 'Security assessment' },
+  { value: 'version_history', label: 'Version history' },
+  { value: 'community_review', label: 'Community/stakeholder review' },
+  { value: 'institutional_capacity', label: 'Institutional capacity' },
+  { value: 'sustainability', label: 'Sustainability plan' },
+  { value: 'experiment_results', label: 'Learnability experiment results' },
   { value: 'other', label: 'Other supporting source' },
 ];
 
@@ -156,7 +169,7 @@ export function AssessmentQuestionnaireDialog({
     onSuccess: (result) => {
       toastUtils.success(
         'System findings accepted',
-        `${result.accepted} proposed findings were accepted, including clearly labelled insufficient-evidence conclusions.`
+        `${result.accepted} ready findings were accepted. Missing-information decisions remain individual and auditable.`
       );
       questionnaire.refetch();
     },
@@ -257,7 +270,7 @@ export function AssessmentQuestionnaireDialog({
             <Button
               type="button"
               disabled={
-                !questionnaire.data?.workbench.automation_complete ||
+                !questionnaire.data?.workbench.can_finalize ||
                 finalize.isPending
               }
               onClick={() => finalize.mutate()}
@@ -334,6 +347,7 @@ export function AssessmentQuestionnaireDialog({
                 metric={selected}
                 onSaved={() => questionnaire.refetch()}
                 onAutomationQueued={() => setExecutionQueued(true)}
+                onOpenSources={() => setShowSources(true)}
               />
             ) : (
               <EmptyWorkbench />
@@ -380,6 +394,7 @@ function SourcePanel({
     resolver: assessmentSourceResolver,
     defaultValues: {
       source_type: 'dataset',
+      ingestion_mode: 'reference',
       source_uri: '',
       source_file: undefined,
     },
@@ -394,10 +409,16 @@ function SourcePanel({
         source_type: values.source_type,
         file,
         source_uri: values.source_uri || undefined,
+        ingestion_mode: file ? 'upload' : values.ingestion_mode,
       });
     },
     onSuccess: (source) => {
-      form.reset();
+      form.reset({
+        source_type: 'dataset',
+        ingestion_mode: 'reference',
+        source_uri: '',
+        source_file: undefined,
+      });
       if (source.processing_status === 'failed') {
         toastUtils.error(
           'Source added but not processed',
@@ -433,6 +454,17 @@ function SourcePanel({
             label="Public source URL (optional)"
             placeholder="https://…"
           />
+          <FormSelectField
+            control={form.control}
+            name="ingestion_mode"
+            label="How should a URL be used?"
+            options={[
+              { value: 'reference', label: 'Reference URL only' },
+              { value: 'import_url', label: 'Import and analyse URL' },
+              { value: 'upload', label: 'Uploaded file' },
+            ]}
+            required
+          />
           <FormField
             control={form.control}
             name="source_file"
@@ -457,7 +489,9 @@ function SourcePanel({
           <p>
             Direct profiling supports CSV, JSON and image ZIP archives. Text
             extraction supports PDF, DOCX, TXT, Markdown, CSV, JSON and YAML.
-            URLs are recorded without unsafe server-side fetching.
+            Choose “Import and analyse URL” for a public HTTPS file that should
+            substitute for an upload. Reference-only URLs establish provenance
+            or access but their contents are not analysed.
           </p>
         </form>
       </Form>
@@ -485,10 +519,12 @@ function MetricWorkbench({
   metric,
   onSaved,
   onAutomationQueued,
+  onOpenSources,
 }: Readonly<{
   metric: QuestionnaireMetric;
   onSaved: () => void;
   onAutomationQueued: () => void;
+  onOpenSources: () => void;
 }>) {
   const [editing, setEditing] = useState(false);
   const [supplyingInput, setSupplyingInput] = useState(false);
@@ -515,6 +551,9 @@ function MetricWorkbench({
         </h2>
         <p className="mt-3 text-sm leading-6 text-muted-foreground">
           {metric.question}
+        </p>
+        <p className="mt-2 rounded-md bg-muted p-3 text-xs text-muted-foreground">
+          <strong>Scoring formula:</strong> {metric.methodology.formula}
         </p>
       </div>
       {!suggestion ? (
@@ -593,10 +632,18 @@ function MetricWorkbench({
           <div className="flex gap-3">
             <Button
               type="button"
-              disabled={accept.isPending || metric.status === 'accepted'}
+              disabled={
+                accept.isPending ||
+                metric.status === 'accepted' ||
+                (suggestion.review_status === 'missing_input' && !metric.answer)
+              }
               onClick={() => accept.mutate()}
             >
-              {metric.status === 'accepted' ? 'Accepted' : 'Accept finding'}
+              {metric.status === 'accepted'
+                ? 'Accepted'
+                : suggestion.review_status === 'missing_input' && !metric.answer
+                  ? 'Resolve missing information first'
+                  : 'Accept finding'}
             </Button>
             {suggestion.missing_inputs.length ? (
               <Button
@@ -620,12 +667,16 @@ function MetricWorkbench({
       {supplyingInput ? (
         <MetricInputForm
           metric={metric}
+          onOpenSources={onOpenSources}
           onAutomationQueued={onAutomationQueued}
           onSaved={() => {
             setSupplyingInput(false);
             onSaved();
           }}
         />
+      ) : null}
+      {suggestion?.review_status === 'missing_input' ? (
+        <InformationUnavailableForm metric={metric} onSaved={onSaved} />
       ) : null}
       {editing ? (
         <ManualOverrideForm
@@ -645,8 +696,8 @@ function hasEvaluationChecks(
 ): value is { evaluation_checks: MetricEvaluationCheck[] } {
   return Boolean(
     value &&
-      Array.isArray(value.evaluation_checks) &&
-      value.evaluation_checks.length
+    Array.isArray(value.evaluation_checks) &&
+    value.evaluation_checks.length
   );
 }
 
@@ -679,11 +730,16 @@ function MetricInputForm({
   metric,
   onSaved,
   onAutomationQueued,
+  onOpenSources,
 }: Readonly<{
   metric: QuestionnaireMetric;
   onSaved: () => void;
   onAutomationQueued: () => void;
+  onOpenSources: () => void;
 }>) {
+  const hasStructuredFields = metric.input_requirements.some(
+    (requirement) => requirement.fields.length > 0
+  );
   const defaults = Object.fromEntries(
     metric.input_requirements.map((requirement) => [
       requirement.key,
@@ -696,7 +752,14 @@ function MetricInputForm({
   });
   const save = useMutation({
     mutationFn: (values: MetricInputFormInput) =>
-      api.provideMetricInputs(metric.id, values.values),
+      api.provideMetricInputs(
+        metric.id,
+        Object.fromEntries(
+          Object.entries(values.values).filter(
+            ([, value]) => Object.keys(value).length > 0
+          )
+        )
+      ),
     onSuccess: (result) => {
       onAutomationQueued();
       toastUtils.success(
@@ -722,10 +785,16 @@ function MetricInputForm({
           <fieldset key={requirement.key}>
             <legend>{requirement.label}</legend>
             <p>{requirement.description}</p>
+            {requirement.delivery_modes?.some((mode) =>
+              ['upload', 'import_url', 'reference_url'].includes(mode)
+            ) ? (
+              <Button type="button" variant="outline" onClick={onOpenSources}>
+                <FileUp className="mr-2 size-4" /> Attach or link this evidence
+              </Button>
+            ) : null}
             <div className="grid gap-4 sm:grid-cols-2">
               {requirement.fields.map((field) => {
-                const name =
-                  `values.${requirement.key}.${field.name}` as const;
+                const name = `values.${requirement.key}.${field.name}` as const;
                 return (
                   <label
                     key={`${requirement.key}-${field.name}`}
@@ -750,6 +819,13 @@ function MetricInputForm({
                       />
                     ) : (
                       <Input
+                        type={
+                          field.type === 'number' ||
+                          field.type === 'date' ||
+                          field.type === 'url'
+                            ? field.type
+                            : 'text'
+                        }
                         {...form.register(name, { required: field.required })}
                       />
                     )}
@@ -764,9 +840,16 @@ function MetricInputForm({
             </div>
           </fieldset>
         ))}
-        <Button type="submit" disabled={save.isPending}>
-          {save.isPending ? 'Saving…' : 'Save and rerun affected metrics'}
-        </Button>
+        {hasStructuredFields ? (
+          <Button type="submit" disabled={save.isPending}>
+            {save.isPending ? 'Saving…' : 'Save and rerun affected metrics'}
+          </Button>
+        ) : (
+          <p>
+            Attach or import the requested evidence above, then rerun the
+            automated assessment.
+          </p>
+        )}
       </form>
     </Form>
   );
@@ -774,6 +857,61 @@ function MetricInputForm({
 
 function StatusBadge({ value }: Readonly<{ value: string }>) {
   return <span className="status-pill">{value.replaceAll('_', ' ')}</span>;
+}
+
+function InformationUnavailableForm({
+  metric,
+  onSaved,
+}: Readonly<{ metric: QuestionnaireMetric; onSaved: () => void }>) {
+  const form = useForm<InformationUnavailableFormInput>({
+    resolver: informationUnavailableResolver,
+    defaultValues: { reason: '' },
+  });
+  const acceptUnavailable = useMutation({
+    mutationFn: (values: InformationUnavailableFormInput) =>
+      api.markInformationUnavailable(metric.id, values.reason),
+    onSuccess: () => {
+      toastUtils.success(
+        'Information marked unavailable',
+        `${metric.metric_code} is resolved as insufficient evidence and remains excluded from scoring.`
+      );
+      onSaved();
+    },
+    onError: showError('Decision was not saved'),
+  });
+  return (
+    <Form {...form}>
+      <form
+        className="manual-override"
+        onSubmit={form.handleSubmit((values) =>
+          acceptUnavailable.mutate(values)
+        )}
+      >
+        <h3>Do you genuinely not have this information?</h3>
+        <p>
+          Record why it is unavailable. The metric will be resolved as
+          insufficient evidence, excluded from the score, and will not block
+          completion.
+        </p>
+        <FormTextareaField
+          control={form.control}
+          name="reason"
+          label="Reason information is unavailable"
+          rows={3}
+          placeholder="For example: the source organisation did not publish collection instruments."
+        />
+        <Button
+          type="submit"
+          variant="outline"
+          disabled={acceptUnavailable.isPending}
+        >
+          {acceptUnavailable.isPending
+            ? 'Saving decision…'
+            : 'Mark unavailable and accept insufficient-evidence finding'}
+        </Button>
+      </form>
+    </Form>
+  );
 }
 
 function ManualOverrideForm({

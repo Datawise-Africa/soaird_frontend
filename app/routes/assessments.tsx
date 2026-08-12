@@ -12,5 +12,5 @@ export function meta() {
 }
 
 export default function AssessmentsPage() {
-  return <WorkspaceView view="assessments" onNewAssessment={() => undefined} />;
+  return <WorkspaceView view="assessments" />;
 }

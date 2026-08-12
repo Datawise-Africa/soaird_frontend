@@ -1,0 +1,3955 @@
+{
+    "generated_at": "2026-08-12T07:19:48.122748+00:00",
+    "score_policy": "accepted_else_automated",
+    "assessment": {
+        "run_id": "08cc0e4c-da5f-484a-94c9-36984a4fb0e7",
+        "assessment_code": "ASMT-2026-3231B7EE7589",
+        "run_code": "ASMT-2026-3231B7EE7589-R001",
+        "dataset_code": "SOAI-RD-C9580377D8A4",
+        "dataset_name": "Africa Biomass dataset",
+        "framework": "SOAI-RD",
+        "framework_version": "1.0",
+        "scoring_version": "1.0",
+        "completed_at": "2026-08-12T07:07:52.699783+00:00"
+    },
+    "summary": {
+        "composite_score": null,
+        "readiness_band": null,
+        "assessment_completion": null,
+        "evidence_coverage": null,
+        "pillar_count": 9,
+        "metric_count": 68,
+        "accepted_metric_count": 0,
+        "insufficient_evidence_count": 0
+    },
+    "sources": [
+        {
+            "id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+            "source_type": "dataset",
+            "original_filename": "Africa_Biomass_dataset.csv",
+            "source_uri": "",
+            "checksum": "6642023c24236849d9657ca66e0bca1ffc791d6920f526d5a062954bfa78d0a9",
+            "processing_status": "ready",
+            "discovered_inputs": [
+                "dataset_access"
+            ]
+        },
+        {
+            "id": "b8a2aa86-0895-4da4-85bc-79b36d7358b2",
+            "source_type": "metadata",
+            "original_filename": "DATA_DICTIONARY.md",
+            "source_uri": "",
+            "checksum": "7725e0b377e82d46f4fb74d6c8685d13d4e7aa520f351b82d90936ed8a2fcfad",
+            "processing_status": "ready",
+            "discovered_inputs": [
+                "declared_schema",
+                "documentation",
+                "metadata_access",
+                "provenance_evidence"
+            ]
+        },
+        {
+            "id": "8835c5eb-572c-4973-8784-f5e109c6fb49",
+            "source_type": "documentation",
+            "original_filename": "README_official.md",
+            "source_uri": "",
+            "checksum": "d66af155ee0c6b1e8a4a4eafad4fd497a4ba1dffcbcdeef5c9fe5ea360049b7d",
+            "processing_status": "ready",
+            "discovered_inputs": [
+                "documentation"
+            ]
+        },
+        {
+            "id": "16a9d0ec-9463-426b-ae81-7a4b9c4d0730",
+            "source_type": "licence",
+            "original_filename": "LICENCE_EVIDENCE.md",
+            "source_uri": "",
+            "checksum": "46ae7862647dd76217d1639d8696f979992d665886cb9818e4d45a6a341ca537",
+            "processing_status": "ready",
+            "discovered_inputs": [
+                "licence_evidence",
+                "version_history"
+            ]
+        }
+    ],
+    "pillars": [
+        {
+            "pillar_code": "P1",
+            "pillar_name": "Technical Quality & Cleanliness",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null
+        },
+        {
+            "pillar_code": "P2",
+            "pillar_name": "Metadata, Provenance & Interoperability",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null
+        },
+        {
+            "pillar_code": "P3",
+            "pillar_name": "Representativeness & Statistical Soundness",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null
+        },
+        {
+            "pillar_code": "P4",
+            "pillar_name": "Ethics, Privacy, Bias & Sovereignty",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null
+        },
+        {
+            "pillar_code": "P5",
+            "pillar_name": "Contextual & Cultural Relevance",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null
+        },
+        {
+            "pillar_code": "P6",
+            "pillar_name": "Infrastructure & Usability Readiness",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null
+        },
+        {
+            "pillar_code": "P7",
+            "pillar_name": "Data Freshness, Timeliness & Versioning",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null
+        },
+        {
+            "pillar_code": "P8",
+            "pillar_name": "AI Impact & Learnability (Proxy Validation)",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null
+        },
+        {
+            "pillar_code": "P9",
+            "pillar_name": "Governance, Security & Sustainability",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null
+        }
+    ],
+    "metrics": [
+        {
+            "pillar_code": "P1",
+            "metric_code": "P1-M01",
+            "metric_name": "Completeness %",
+            "applicability": "insufficient_information",
+            "automated_score": 100.0,
+            "accepted_score": null,
+            "effective_score": 100.0,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "high",
+            "status": "ready_for_review",
+            "explanation": "The system examined 1315 values in 263 records and calculated 100.000% completeness.",
+            "findings": [
+                {
+                    "missing_input": "dataset_access"
+                }
+            ],
+            "recommendations": [],
+            "system_suggestion": {
+                "finding": "meets",
+                "confidence": "high",
+                "score": 100.0,
+                "calculated_value": {
+                    "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                    "percentage": 100.0,
+                    "source_name": "Africa_Biomass_dataset.csv",
+                    "missing_values": 0,
+                    "values_examined": 1315,
+                    "records_examined": 263,
+                    "duplicate_records": 0,
+                    "duplicate_percentage": 0.0,
+                    "completeness_percentage": 100.0
+                },
+                "rationale": "The system examined 1315 values in 263 records and calculated 100.000% completeness.",
+                "execution_method": "automated",
+                "missing_inputs": [],
+                "provenance": {
+                    "source_ids": [
+                        "0c55fb29-5d10-493f-8b3d-b3490f94aab9"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "ready_for_review",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P1",
+            "metric_code": "P1-M02",
+            "metric_name": "Duplicate Control",
+            "applicability": "insufficient_information",
+            "automated_score": 100.0,
+            "accepted_score": null,
+            "effective_score": 100.0,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "high",
+            "status": "ready_for_review",
+            "explanation": "The system compared 263 records and found 0 exact duplicates (0.000%).",
+            "findings": [
+                {
+                    "missing_input": "dataset_access"
+                }
+            ],
+            "recommendations": [],
+            "system_suggestion": {
+                "finding": "meets",
+                "confidence": "high",
+                "score": 100.0,
+                "calculated_value": {
+                    "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                    "source_name": "Africa_Biomass_dataset.csv",
+                    "missing_values": 0,
+                    "values_examined": 1315,
+                    "records_examined": 263,
+                    "duplicate_records": 0,
+                    "duplicate_percentage": 0.0,
+                    "completeness_percentage": 100.0
+                },
+                "rationale": "The system compared 263 records and found 0 exact duplicates (0.000%).",
+                "execution_method": "automated",
+                "missing_inputs": [],
+                "provenance": {
+                    "source_ids": [
+                        "0c55fb29-5d10-493f-8b3d-b3490f94aab9"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "ready_for_review",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P1",
+            "metric_code": "P1-M03",
+            "metric_name": "Outlier Control",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "medium",
+            "status": "ready_for_review",
+            "explanation": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+            "findings": [
+                {
+                    "missing_input": "dataset_access"
+                }
+            ],
+            "recommendations": [
+                "Review the system finding and its source coverage before acceptance."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "medium",
+                "score": null,
+                "calculated_value": {
+                    "summary": {
+                        "total": 1,
+                        "demonstrated": 1,
+                        "not_demonstrated": 0
+                    },
+                    "evaluation_checks": [
+                        {
+                            "key": "dataset_access",
+                            "label": "Dataset access",
+                            "status": "demonstrated",
+                            "evidence": [
+                                {
+                                    "excerpt": "",
+                                    "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                                    "source_uri": "",
+                                    "source_name": "Africa_Biomass_dataset.csv",
+                                    "source_type": "dataset"
+                                }
+                            ],
+                            "explanation": "A required source or structured input was supplied.",
+                            "assessment_input_id": null
+                        }
+                    ]
+                },
+                "rationale": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [],
+                "provenance": {
+                    "source_ids": [
+                        "0c55fb29-5d10-493f-8b3d-b3490f94aab9"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "ready_for_review",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P1",
+            "metric_code": "P1-M04",
+            "metric_name": "Consistency & Schema Adherence",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "medium",
+            "status": "ready_for_review",
+            "explanation": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+            "findings": [
+                {
+                    "missing_input": "dataset_access"
+                }
+            ],
+            "recommendations": [
+                "Review the system finding and its source coverage before acceptance."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "medium",
+                "score": null,
+                "calculated_value": {
+                    "summary": {
+                        "total": 1,
+                        "demonstrated": 1,
+                        "not_demonstrated": 0
+                    },
+                    "evaluation_checks": [
+                        {
+                            "key": "dataset_access",
+                            "label": "Dataset access",
+                            "status": "demonstrated",
+                            "evidence": [
+                                {
+                                    "excerpt": "",
+                                    "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                                    "source_uri": "",
+                                    "source_name": "Africa_Biomass_dataset.csv",
+                                    "source_type": "dataset"
+                                }
+                            ],
+                            "explanation": "A required source or structured input was supplied.",
+                            "assessment_input_id": null
+                        }
+                    ]
+                },
+                "rationale": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [],
+                "provenance": {
+                    "source_ids": [
+                        "0c55fb29-5d10-493f-8b3d-b3490f94aab9"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "ready_for_review",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P1",
+            "metric_code": "P1-M05",
+            "metric_name": "Data Collection Process Review",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: collection documentation.",
+            "findings": [
+                {
+                    "missing_input": "collection_documentation"
+                }
+            ],
+            "recommendations": [
+                "Provide collection documentation."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: collection documentation.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [
+                    "collection_documentation"
+                ],
+                "provenance": {
+                    "source_ids": [],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P1",
+            "metric_code": "P1-M06",
+            "metric_name": "Error Source Documentation",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "medium",
+            "status": "ready_for_review",
+            "explanation": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+            "findings": [
+                {
+                    "missing_input": "documentation"
+                }
+            ],
+            "recommendations": [
+                "Review the system finding and its source coverage before acceptance."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "medium",
+                "score": null,
+                "calculated_value": {
+                    "summary": {
+                        "total": 1,
+                        "demonstrated": 1,
+                        "not_demonstrated": 0
+                    },
+                    "evaluation_checks": [
+                        {
+                            "key": "documentation",
+                            "label": "Documentation",
+                            "status": "demonstrated",
+                            "evidence": [
+                                {
+                                    "excerpt": "",
+                                    "source_id": "b8a2aa86-0895-4da4-85bc-79b36d7358b2",
+                                    "source_uri": "",
+                                    "source_name": "DATA_DICTIONARY.md",
+                                    "source_type": "metadata"
+                                },
+                                {
+                                    "excerpt": "",
+                                    "source_id": "8835c5eb-572c-4973-8784-f5e109c6fb49",
+                                    "source_uri": "",
+                                    "source_name": "README_official.md",
+                                    "source_type": "documentation"
+                                }
+                            ],
+                            "explanation": "A required source or structured input was supplied.",
+                            "assessment_input_id": null
+                        }
+                    ]
+                },
+                "rationale": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [],
+                "provenance": {
+                    "source_ids": [
+                        "b8a2aa86-0895-4da4-85bc-79b36d7358b2",
+                        "8835c5eb-572c-4973-8784-f5e109c6fb49"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "ready_for_review",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P1",
+            "metric_code": "P1-M07",
+            "metric_name": "Preprocessing Step Audit",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: preprocessing documentation.",
+            "findings": [
+                {
+                    "missing_input": "preprocessing_documentation"
+                }
+            ],
+            "recommendations": [
+                "Provide preprocessing documentation."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: preprocessing documentation.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [
+                    "preprocessing_documentation"
+                ],
+                "provenance": {
+                    "source_ids": [],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P2",
+            "metric_code": "P2-M01",
+            "metric_name": "FAIR Compliance Score",
+            "applicability": "conditionally_applicable",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "medium",
+            "status": "ready_for_review",
+            "explanation": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+            "findings": [],
+            "recommendations": [
+                "Review the system finding and its source coverage before acceptance."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "medium",
+                "score": null,
+                "calculated_value": {
+                    "summary": {
+                        "total": 1,
+                        "demonstrated": 0,
+                        "not_demonstrated": 1
+                    },
+                    "evaluation_checks": [
+                        {
+                            "key": "persistent_identifier_or_public_url",
+                            "label": "Persistent identifier or public url",
+                            "status": "not_demonstrated",
+                            "evidence": [],
+                            "explanation": "A required source or structured input was supplied.",
+                            "assessment_input_id": null
+                        }
+                    ]
+                },
+                "rationale": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [],
+                "provenance": {
+                    "source_ids": [],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "ready_for_review",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P2",
+            "metric_code": "P2-M02",
+            "metric_name": "Croissant Metadata Completeness",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "medium",
+            "status": "ready_for_review",
+            "explanation": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+            "findings": [
+                {
+                    "missing_input": "metadata_access"
+                }
+            ],
+            "recommendations": [
+                "Review the system finding and its source coverage before acceptance."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "medium",
+                "score": null,
+                "calculated_value": {
+                    "summary": {
+                        "total": 1,
+                        "demonstrated": 1,
+                        "not_demonstrated": 0
+                    },
+                    "evaluation_checks": [
+                        {
+                            "key": "metadata_access",
+                            "label": "Metadata access",
+                            "status": "demonstrated",
+                            "evidence": [
+                                {
+                                    "excerpt": "",
+                                    "source_id": "b8a2aa86-0895-4da4-85bc-79b36d7358b2",
+                                    "source_uri": "",
+                                    "source_name": "DATA_DICTIONARY.md",
+                                    "source_type": "metadata"
+                                }
+                            ],
+                            "explanation": "A required source or structured input was supplied.",
+                            "assessment_input_id": null
+                        }
+                    ]
+                },
+                "rationale": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [],
+                "provenance": {
+                    "source_ids": [
+                        "b8a2aa86-0895-4da4-85bc-79b36d7358b2"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "ready_for_review",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P2",
+            "metric_code": "P2-M03",
+            "metric_name": "Schema Adherence Rate",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "medium",
+            "status": "ready_for_review",
+            "explanation": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+            "findings": [
+                {
+                    "missing_input": "dataset_access"
+                },
+                {
+                    "missing_input": "declared_schema"
+                }
+            ],
+            "recommendations": [
+                "Review the system finding and its source coverage before acceptance."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "medium",
+                "score": null,
+                "calculated_value": {
+                    "summary": {
+                        "total": 2,
+                        "demonstrated": 2,
+                        "not_demonstrated": 0
+                    },
+                    "evaluation_checks": [
+                        {
+                            "key": "dataset_access",
+                            "label": "Dataset access",
+                            "status": "demonstrated",
+                            "evidence": [
+                                {
+                                    "excerpt": "",
+                                    "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                                    "source_uri": "",
+                                    "source_name": "Africa_Biomass_dataset.csv",
+                                    "source_type": "dataset"
+                                }
+                            ],
+                            "explanation": "A required source or structured input was supplied.",
+                            "assessment_input_id": null
+                        },
+                        {
+                            "key": "declared_schema",
+                            "label": "Declared schema",
+                            "status": "demonstrated",
+                            "evidence": [
+                                {
+                                    "excerpt": "",
+                                    "source_id": "b8a2aa86-0895-4da4-85bc-79b36d7358b2",
+                                    "source_uri": "",
+                                    "source_name": "DATA_DICTIONARY.md",
+                                    "source_type": "metadata"
+                                }
+                            ],
+                            "explanation": "A required source or structured input was supplied.",
+                            "assessment_input_id": null
+                        }
+                    ]
+                },
+                "rationale": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [],
+                "provenance": {
+                    "source_ids": [
+                        "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "b8a2aa86-0895-4da4-85bc-79b36d7358b2"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "ready_for_review",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P2",
+            "metric_code": "P2-M04",
+            "metric_name": "Provenance Completeness",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: lineage records.",
+            "findings": [
+                {
+                    "missing_input": "lineage_records"
+                }
+            ],
+            "recommendations": [
+                "Provide lineage records."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: lineage records.",
+                "execution_method": "configured",
+                "missing_inputs": [
+                    "lineage_records"
+                ],
+                "provenance": {
+                    "source_ids": [],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P2",
+            "metric_code": "P2-M05",
+            "metric_name": "Format Interoperability",
+            "applicability": "applicable",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "medium",
+            "status": "ready_for_review",
+            "explanation": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+            "findings": [],
+            "recommendations": [
+                "Review the system finding and its source coverage before acceptance."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "medium",
+                "score": null,
+                "calculated_value": {
+                    "summary": {
+                        "total": 1,
+                        "demonstrated": 0,
+                        "not_demonstrated": 1
+                    },
+                    "evaluation_checks": [
+                        {
+                            "key": "access_metadata",
+                            "label": "Access metadata",
+                            "status": "not_demonstrated",
+                            "evidence": [],
+                            "explanation": "A required source or structured input was supplied.",
+                            "assessment_input_id": null
+                        }
+                    ]
+                },
+                "rationale": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [],
+                "provenance": {
+                    "source_ids": [],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "ready_for_review",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P2",
+            "metric_code": "P2-M06",
+            "metric_name": "Documentation Quality Review",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "medium",
+            "status": "ready_for_review",
+            "explanation": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+            "findings": [
+                {
+                    "missing_input": "documentation"
+                }
+            ],
+            "recommendations": [
+                "Review the system finding and its source coverage before acceptance."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "medium",
+                "score": null,
+                "calculated_value": {
+                    "summary": {
+                        "total": 1,
+                        "demonstrated": 1,
+                        "not_demonstrated": 0
+                    },
+                    "evaluation_checks": [
+                        {
+                            "key": "documentation",
+                            "label": "Documentation",
+                            "status": "demonstrated",
+                            "evidence": [
+                                {
+                                    "excerpt": "",
+                                    "source_id": "b8a2aa86-0895-4da4-85bc-79b36d7358b2",
+                                    "source_uri": "",
+                                    "source_name": "DATA_DICTIONARY.md",
+                                    "source_type": "metadata"
+                                },
+                                {
+                                    "excerpt": "",
+                                    "source_id": "8835c5eb-572c-4973-8784-f5e109c6fb49",
+                                    "source_uri": "",
+                                    "source_name": "README_official.md",
+                                    "source_type": "documentation"
+                                }
+                            ],
+                            "explanation": "A required source or structured input was supplied.",
+                            "assessment_input_id": null
+                        }
+                    ]
+                },
+                "rationale": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [],
+                "provenance": {
+                    "source_ids": [
+                        "b8a2aa86-0895-4da4-85bc-79b36d7358b2",
+                        "8835c5eb-572c-4973-8784-f5e109c6fb49"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "ready_for_review",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P2",
+            "metric_code": "P2-M07",
+            "metric_name": "Source Traceability",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "medium",
+            "status": "ready_for_review",
+            "explanation": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+            "findings": [
+                {
+                    "missing_input": "provenance_evidence"
+                }
+            ],
+            "recommendations": [
+                "Review the system finding and its source coverage before acceptance."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "medium",
+                "score": null,
+                "calculated_value": {
+                    "summary": {
+                        "total": 1,
+                        "demonstrated": 1,
+                        "not_demonstrated": 0
+                    },
+                    "evaluation_checks": [
+                        {
+                            "key": "provenance_evidence",
+                            "label": "Provenance evidence",
+                            "status": "demonstrated",
+                            "evidence": [
+                                {
+                                    "excerpt": "",
+                                    "source_id": "b8a2aa86-0895-4da4-85bc-79b36d7358b2",
+                                    "source_uri": "",
+                                    "source_name": "DATA_DICTIONARY.md",
+                                    "source_type": "metadata"
+                                }
+                            ],
+                            "explanation": "A required source or structured input was supplied.",
+                            "assessment_input_id": null
+                        }
+                    ]
+                },
+                "rationale": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [],
+                "provenance": {
+                    "source_ids": [
+                        "b8a2aa86-0895-4da4-85bc-79b36d7358b2"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "ready_for_review",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P2",
+            "metric_code": "P2-M08",
+            "metric_name": "Reproducibility Sufficiency",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "medium",
+            "status": "ready_for_review",
+            "explanation": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+            "findings": [
+                {
+                    "missing_input": "documentation"
+                }
+            ],
+            "recommendations": [
+                "Review the system finding and its source coverage before acceptance."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "medium",
+                "score": null,
+                "calculated_value": {
+                    "summary": {
+                        "total": 1,
+                        "demonstrated": 1,
+                        "not_demonstrated": 0
+                    },
+                    "evaluation_checks": [
+                        {
+                            "key": "documentation",
+                            "label": "Documentation",
+                            "status": "demonstrated",
+                            "evidence": [
+                                {
+                                    "excerpt": "",
+                                    "source_id": "b8a2aa86-0895-4da4-85bc-79b36d7358b2",
+                                    "source_uri": "",
+                                    "source_name": "DATA_DICTIONARY.md",
+                                    "source_type": "metadata"
+                                },
+                                {
+                                    "excerpt": "",
+                                    "source_id": "8835c5eb-572c-4973-8784-f5e109c6fb49",
+                                    "source_uri": "",
+                                    "source_name": "README_official.md",
+                                    "source_type": "documentation"
+                                }
+                            ],
+                            "explanation": "A required source or structured input was supplied.",
+                            "assessment_input_id": null
+                        }
+                    ]
+                },
+                "rationale": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [],
+                "provenance": {
+                    "source_ids": [
+                        "b8a2aa86-0895-4da4-85bc-79b36d7358b2",
+                        "8835c5eb-572c-4973-8784-f5e109c6fb49"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "ready_for_review",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P3",
+            "metric_code": "P3-M01",
+            "metric_name": "Class Balance",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: target definition.",
+            "findings": [],
+            "recommendations": [
+                "Provide target definition."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: target definition.",
+                "execution_method": "configured",
+                "missing_inputs": [
+                    "target_definition"
+                ],
+                "provenance": {
+                    "source_ids": [
+                        "0c55fb29-5d10-493f-8b3d-b3490f94aab9"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P3",
+            "metric_code": "P3-M02",
+            "metric_name": "Demographic Subgroup Coverage",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: sensitive attributes.",
+            "findings": [
+                {
+                    "missing_input": "dataset_access"
+                },
+                {
+                    "missing_input": "sensitive_attributes"
+                }
+            ],
+            "recommendations": [
+                "Provide sensitive attributes."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: sensitive attributes.",
+                "execution_method": "configured",
+                "missing_inputs": [
+                    "sensitive_attributes"
+                ],
+                "provenance": {
+                    "source_ids": [
+                        "0c55fb29-5d10-493f-8b3d-b3490f94aab9"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P3",
+            "metric_code": "P3-M03",
+            "metric_name": "Feature Distribution Match",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: reference population.",
+            "findings": [
+                {
+                    "missing_input": "dataset_access"
+                },
+                {
+                    "missing_input": "reference_population"
+                }
+            ],
+            "recommendations": [
+                "Provide reference population."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: reference population.",
+                "execution_method": "configured",
+                "missing_inputs": [
+                    "reference_population"
+                ],
+                "provenance": {
+                    "source_ids": [
+                        "0c55fb29-5d10-493f-8b3d-b3490f94aab9"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P3",
+            "metric_code": "P3-M04",
+            "metric_name": "Intersectionality Coverage",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: sensitive attributes.",
+            "findings": [
+                {
+                    "missing_input": "dataset_access"
+                },
+                {
+                    "missing_input": "sensitive_attributes"
+                }
+            ],
+            "recommendations": [
+                "Provide sensitive attributes."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: sensitive attributes.",
+                "execution_method": "configured",
+                "missing_inputs": [
+                    "sensitive_attributes"
+                ],
+                "provenance": {
+                    "source_ids": [
+                        "0c55fb29-5d10-493f-8b3d-b3490f94aab9"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P3",
+            "metric_code": "P3-M05",
+            "metric_name": "Demographic/Linguistic/Geographic Coverage",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: deployment population definition.",
+            "findings": [
+                {
+                    "missing_input": "deployment_population_definition"
+                }
+            ],
+            "recommendations": [
+                "Provide deployment population definition."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: deployment population definition.",
+                "execution_method": "expert_review",
+                "missing_inputs": [
+                    "deployment_population_definition"
+                ],
+                "provenance": {
+                    "source_ids": [],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P3",
+            "metric_code": "P3-M06",
+            "metric_name": "Urban/Rural Balance",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: geographic metadata.",
+            "findings": [
+                {
+                    "missing_input": "geographic_metadata"
+                }
+            ],
+            "recommendations": [
+                "Provide geographic metadata."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: geographic metadata.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [
+                    "geographic_metadata"
+                ],
+                "provenance": {
+                    "source_ids": [],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P3",
+            "metric_code": "P3-M07",
+            "metric_name": "Dialect & Register Coverage",
+            "applicability": "not_applicable",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "not_available",
+            "status": "not_applicable",
+            "explanation": "Metric applies to TEXT, AUDIO, MULTIMODAL, not TABULAR.",
+            "findings": [],
+            "recommendations": [],
+            "system_suggestion": null,
+            "evidence": []
+        },
+        {
+            "pillar_code": "P4",
+            "metric_code": "P4-M01",
+            "metric_name": "Demographic Parity / Equalised Odds",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: sensitive attributes, target definition.",
+            "findings": [],
+            "recommendations": [
+                "Provide sensitive attributes.",
+                "Provide target definition."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: sensitive attributes, target definition.",
+                "execution_method": "configured",
+                "missing_inputs": [
+                    "sensitive_attributes",
+                    "target_definition"
+                ],
+                "provenance": {
+                    "source_ids": [
+                        "0c55fb29-5d10-493f-8b3d-b3490f94aab9"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P4",
+            "metric_code": "P4-M02",
+            "metric_name": "Re-identification Risk Control",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: privacy attribute configuration.",
+            "findings": [
+                {
+                    "missing_input": "dataset_access"
+                },
+                {
+                    "missing_input": "privacy_attribute_configuration"
+                }
+            ],
+            "recommendations": [
+                "Provide privacy attribute configuration."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: privacy attribute configuration.",
+                "execution_method": "configured",
+                "missing_inputs": [
+                    "privacy_attribute_configuration"
+                ],
+                "provenance": {
+                    "source_ids": [
+                        "0c55fb29-5d10-493f-8b3d-b3490f94aab9"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P4",
+            "metric_code": "P4-M03",
+            "metric_name": "PII Detection Control",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "medium",
+            "status": "ready_for_review",
+            "explanation": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+            "findings": [
+                {
+                    "missing_input": "dataset_access"
+                }
+            ],
+            "recommendations": [
+                "Review the system finding and its source coverage before acceptance."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "medium",
+                "score": null,
+                "calculated_value": {
+                    "summary": {
+                        "total": 1,
+                        "demonstrated": 1,
+                        "not_demonstrated": 0
+                    },
+                    "evaluation_checks": [
+                        {
+                            "key": "dataset_access",
+                            "label": "Dataset access",
+                            "status": "demonstrated",
+                            "evidence": [
+                                {
+                                    "excerpt": "",
+                                    "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                                    "source_uri": "",
+                                    "source_name": "Africa_Biomass_dataset.csv",
+                                    "source_type": "dataset"
+                                }
+                            ],
+                            "explanation": "A required source or structured input was supplied.",
+                            "assessment_input_id": null
+                        }
+                    ]
+                },
+                "rationale": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [],
+                "provenance": {
+                    "source_ids": [
+                        "0c55fb29-5d10-493f-8b3d-b3490f94aab9"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "ready_for_review",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P4",
+            "metric_code": "P4-M04",
+            "metric_name": "Toxicity Control",
+            "applicability": "not_applicable",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "not_available",
+            "status": "not_applicable",
+            "explanation": "Metric applies to TEXT, AUDIO, MULTIMODAL, not TABULAR.",
+            "findings": [],
+            "recommendations": [],
+            "system_suggestion": null,
+            "evidence": []
+        },
+        {
+            "pillar_code": "P4",
+            "metric_code": "P4-M05",
+            "metric_name": "Licence Compliance Score",
+            "applicability": "conditionally_applicable",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "medium",
+            "status": "ready_for_review",
+            "explanation": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+            "findings": [],
+            "recommendations": [
+                "Review the system finding and its source coverage before acceptance."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "medium",
+                "score": null,
+                "calculated_value": {
+                    "summary": {
+                        "total": 1,
+                        "demonstrated": 1,
+                        "not_demonstrated": 0
+                    },
+                    "evaluation_checks": [
+                        {
+                            "key": "licence_evidence",
+                            "label": "Licence evidence",
+                            "status": "demonstrated",
+                            "evidence": [
+                                {
+                                    "excerpt": "",
+                                    "source_id": "16a9d0ec-9463-426b-ae81-7a4b9c4d0730",
+                                    "source_uri": "",
+                                    "source_name": "LICENCE_EVIDENCE.md",
+                                    "source_type": "licence"
+                                }
+                            ],
+                            "explanation": "A required source or structured input was supplied.",
+                            "assessment_input_id": null
+                        }
+                    ]
+                },
+                "rationale": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [],
+                "provenance": {
+                    "source_ids": [
+                        "16a9d0ec-9463-426b-ae81-7a4b9c4d0730"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "ready_for_review",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P4",
+            "metric_code": "P4-M06",
+            "metric_name": "Consent Framework Review",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: consent documentation.",
+            "findings": [
+                {
+                    "missing_input": "consent_documentation"
+                }
+            ],
+            "recommendations": [
+                "Provide consent documentation."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: consent documentation.",
+                "execution_method": "expert_review",
+                "missing_inputs": [
+                    "consent_documentation"
+                ],
+                "provenance": {
+                    "source_ids": [],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P4",
+            "metric_code": "P4-M07",
+            "metric_name": "Colonial Data Bias Assessment",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "medium",
+            "status": "ready_for_review",
+            "explanation": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+            "findings": [
+                {
+                    "missing_input": "documentation"
+                }
+            ],
+            "recommendations": [
+                "Review the system finding and its source coverage before acceptance."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "medium",
+                "score": null,
+                "calculated_value": {
+                    "summary": {
+                        "total": 1,
+                        "demonstrated": 1,
+                        "not_demonstrated": 0
+                    },
+                    "evaluation_checks": [
+                        {
+                            "key": "documentation",
+                            "label": "Documentation",
+                            "status": "demonstrated",
+                            "evidence": [
+                                {
+                                    "excerpt": "",
+                                    "source_id": "b8a2aa86-0895-4da4-85bc-79b36d7358b2",
+                                    "source_uri": "",
+                                    "source_name": "DATA_DICTIONARY.md",
+                                    "source_type": "metadata"
+                                },
+                                {
+                                    "excerpt": "",
+                                    "source_id": "8835c5eb-572c-4973-8784-f5e109c6fb49",
+                                    "source_uri": "",
+                                    "source_name": "README_official.md",
+                                    "source_type": "documentation"
+                                }
+                            ],
+                            "explanation": "A required source or structured input was supplied.",
+                            "assessment_input_id": null
+                        }
+                    ]
+                },
+                "rationale": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [],
+                "provenance": {
+                    "source_ids": [
+                        "b8a2aa86-0895-4da4-85bc-79b36d7358b2",
+                        "8835c5eb-572c-4973-8784-f5e109c6fb49"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "ready_for_review",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P4",
+            "metric_code": "P4-M08",
+            "metric_name": "Data Sovereignty Documentation",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: governance documentation.",
+            "findings": [
+                {
+                    "missing_input": "governance_documentation"
+                }
+            ],
+            "recommendations": [
+                "Provide governance documentation."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: governance documentation.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [
+                    "governance_documentation"
+                ],
+                "provenance": {
+                    "source_ids": [],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P5",
+            "metric_code": "P5-M01",
+            "metric_name": "Multilingual Coverage Score",
+            "applicability": "not_applicable",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "not_available",
+            "status": "not_applicable",
+            "explanation": "Metric applies to TEXT, AUDIO, MULTIMODAL, not TABULAR.",
+            "findings": [],
+            "recommendations": [],
+            "system_suggestion": null,
+            "evidence": []
+        },
+        {
+            "pillar_code": "P5",
+            "metric_code": "P5-M02",
+            "metric_name": "Code-Switching Detection Rate",
+            "applicability": "not_applicable",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "not_available",
+            "status": "not_applicable",
+            "explanation": "Metric applies to TEXT, AUDIO, MULTIMODAL, not TABULAR.",
+            "findings": [],
+            "recommendations": [],
+            "system_suggestion": null,
+            "evidence": []
+        },
+        {
+            "pillar_code": "P5",
+            "metric_code": "P5-M03",
+            "metric_name": "Named Entity African Coverage",
+            "applicability": "not_applicable",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "not_available",
+            "status": "not_applicable",
+            "explanation": "Metric applies to TEXT, AUDIO, MULTIMODAL, not TABULAR.",
+            "findings": [],
+            "recommendations": [],
+            "system_suggestion": null,
+            "evidence": []
+        },
+        {
+            "pillar_code": "P5",
+            "metric_code": "P5-M04",
+            "metric_name": "Domain Vocabulary Match",
+            "applicability": "not_applicable",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "not_available",
+            "status": "not_applicable",
+            "explanation": "Metric applies to TEXT, AUDIO, MULTIMODAL, not TABULAR.",
+            "findings": [],
+            "recommendations": [],
+            "system_suggestion": null,
+            "evidence": []
+        },
+        {
+            "pillar_code": "P5",
+            "metric_code": "P5-M05",
+            "metric_name": "Cultural Appropriateness Feedback",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: community review.",
+            "findings": [
+                {
+                    "missing_input": "community_review"
+                }
+            ],
+            "recommendations": [
+                "Provide community review."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: community review.",
+                "execution_method": "community_review",
+                "missing_inputs": [
+                    "community_review"
+                ],
+                "provenance": {
+                    "source_ids": [],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P5",
+            "metric_code": "P5-M06",
+            "metric_name": "Community Priority Alignment",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: community or stakeholder evidence.",
+            "findings": [
+                {
+                    "missing_input": "community_or_stakeholder_evidence"
+                }
+            ],
+            "recommendations": [
+                "Provide community or stakeholder evidence."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: community or stakeholder evidence.",
+                "execution_method": "community_review",
+                "missing_inputs": [
+                    "community_or_stakeholder_evidence"
+                ],
+                "provenance": {
+                    "source_ids": [],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P5",
+            "metric_code": "P5-M07",
+            "metric_name": "Oral Knowledge Integration",
+            "applicability": "not_applicable",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "not_available",
+            "status": "not_applicable",
+            "explanation": "Metric applies to TEXT, AUDIO, VIDEO, MULTIMODAL, not TABULAR.",
+            "findings": [],
+            "recommendations": [],
+            "system_suggestion": null,
+            "evidence": []
+        },
+        {
+            "pillar_code": "P6",
+            "metric_code": "P6-M01",
+            "metric_name": "Bandwidth Feasibility",
+            "applicability": "applicable",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "medium",
+            "status": "ready_for_review",
+            "explanation": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+            "findings": [],
+            "recommendations": [
+                "Review the system finding and its source coverage before acceptance."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "medium",
+                "score": null,
+                "calculated_value": {
+                    "summary": {
+                        "total": 1,
+                        "demonstrated": 0,
+                        "not_demonstrated": 1
+                    },
+                    "evaluation_checks": [
+                        {
+                            "key": "access_metadata",
+                            "label": "Access metadata",
+                            "status": "not_demonstrated",
+                            "evidence": [],
+                            "explanation": "A required source or structured input was supplied.",
+                            "assessment_input_id": null
+                        }
+                    ]
+                },
+                "rationale": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [],
+                "provenance": {
+                    "source_ids": [],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "ready_for_review",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P6",
+            "metric_code": "P6-M02",
+            "metric_name": "API Availability Score",
+            "applicability": "applicable",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "medium",
+            "status": "ready_for_review",
+            "explanation": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+            "findings": [],
+            "recommendations": [
+                "Review the system finding and its source coverage before acceptance."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "medium",
+                "score": null,
+                "calculated_value": {
+                    "summary": {
+                        "total": 1,
+                        "demonstrated": 0,
+                        "not_demonstrated": 1
+                    },
+                    "evaluation_checks": [
+                        {
+                            "key": "access_metadata",
+                            "label": "Access metadata",
+                            "status": "not_demonstrated",
+                            "evidence": [],
+                            "explanation": "A required source or structured input was supplied.",
+                            "assessment_input_id": null
+                        }
+                    ]
+                },
+                "rationale": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [],
+                "provenance": {
+                    "source_ids": [],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "ready_for_review",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P6",
+            "metric_code": "P6-M03",
+            "metric_name": "Offline Accessibility Score",
+            "applicability": "conditionally_applicable",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "medium",
+            "status": "ready_for_review",
+            "explanation": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+            "findings": [],
+            "recommendations": [
+                "Review the system finding and its source coverage before acceptance."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "medium",
+                "score": null,
+                "calculated_value": {
+                    "summary": {
+                        "total": 1,
+                        "demonstrated": 0,
+                        "not_demonstrated": 1
+                    },
+                    "evaluation_checks": [
+                        {
+                            "key": "access_metadata",
+                            "label": "Access metadata",
+                            "status": "not_demonstrated",
+                            "evidence": [],
+                            "explanation": "A required source or structured input was supplied.",
+                            "assessment_input_id": null
+                        }
+                    ]
+                },
+                "rationale": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [],
+                "provenance": {
+                    "source_ids": [],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "ready_for_review",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P6",
+            "metric_code": "P6-M04",
+            "metric_name": "Mobile Format Compatibility",
+            "applicability": "conditionally_applicable",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "medium",
+            "status": "ready_for_review",
+            "explanation": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+            "findings": [],
+            "recommendations": [
+                "Review the system finding and its source coverage before acceptance."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "medium",
+                "score": null,
+                "calculated_value": {
+                    "summary": {
+                        "total": 1,
+                        "demonstrated": 0,
+                        "not_demonstrated": 1
+                    },
+                    "evaluation_checks": [
+                        {
+                            "key": "access_metadata",
+                            "label": "Access metadata",
+                            "status": "not_demonstrated",
+                            "evidence": [],
+                            "explanation": "A required source or structured input was supplied.",
+                            "assessment_input_id": null
+                        }
+                    ]
+                },
+                "rationale": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [],
+                "provenance": {
+                    "source_ids": [],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "ready_for_review",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P6",
+            "metric_code": "P6-M05",
+            "metric_name": "Compression Efficiency",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: dataset files.",
+            "findings": [
+                {
+                    "missing_input": "dataset_files"
+                }
+            ],
+            "recommendations": [
+                "Provide dataset files."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: dataset files.",
+                "execution_method": "full",
+                "missing_inputs": [
+                    "dataset_files"
+                ],
+                "provenance": {
+                    "source_ids": [],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P6",
+            "metric_code": "P6-M06",
+            "metric_name": "Low-Bandwidth Feasibility Review",
+            "applicability": "conditionally_applicable",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "medium",
+            "status": "ready_for_review",
+            "explanation": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+            "findings": [],
+            "recommendations": [
+                "Review the system finding and its source coverage before acceptance."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "medium",
+                "score": null,
+                "calculated_value": {
+                    "summary": {
+                        "total": 1,
+                        "demonstrated": 0,
+                        "not_demonstrated": 1
+                    },
+                    "evaluation_checks": [
+                        {
+                            "key": "access_metadata",
+                            "label": "Access metadata",
+                            "status": "not_demonstrated",
+                            "evidence": [],
+                            "explanation": "A required source or structured input was supplied.",
+                            "assessment_input_id": null
+                        }
+                    ]
+                },
+                "rationale": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [],
+                "provenance": {
+                    "source_ids": [],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "ready_for_review",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P6",
+            "metric_code": "P6-M07",
+            "metric_name": "Power Stability Dependency",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: processing requirements.",
+            "findings": [
+                {
+                    "missing_input": "processing_requirements"
+                }
+            ],
+            "recommendations": [
+                "Provide processing requirements."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: processing requirements.",
+                "execution_method": "expert_review",
+                "missing_inputs": [
+                    "processing_requirements"
+                ],
+                "provenance": {
+                    "source_ids": [],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P6",
+            "metric_code": "P6-M08",
+            "metric_name": "Infrastructure Assumption Review",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "medium",
+            "status": "ready_for_review",
+            "explanation": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+            "findings": [
+                {
+                    "missing_input": "documentation"
+                }
+            ],
+            "recommendations": [
+                "Review the system finding and its source coverage before acceptance."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "medium",
+                "score": null,
+                "calculated_value": {
+                    "summary": {
+                        "total": 1,
+                        "demonstrated": 1,
+                        "not_demonstrated": 0
+                    },
+                    "evaluation_checks": [
+                        {
+                            "key": "documentation",
+                            "label": "Documentation",
+                            "status": "demonstrated",
+                            "evidence": [
+                                {
+                                    "excerpt": "",
+                                    "source_id": "b8a2aa86-0895-4da4-85bc-79b36d7358b2",
+                                    "source_uri": "",
+                                    "source_name": "DATA_DICTIONARY.md",
+                                    "source_type": "metadata"
+                                },
+                                {
+                                    "excerpt": "",
+                                    "source_id": "8835c5eb-572c-4973-8784-f5e109c6fb49",
+                                    "source_uri": "",
+                                    "source_name": "README_official.md",
+                                    "source_type": "documentation"
+                                }
+                            ],
+                            "explanation": "A required source or structured input was supplied.",
+                            "assessment_input_id": null
+                        }
+                    ]
+                },
+                "rationale": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [],
+                "provenance": {
+                    "source_ids": [
+                        "b8a2aa86-0895-4da4-85bc-79b36d7358b2",
+                        "8835c5eb-572c-4973-8784-f5e109c6fb49"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "ready_for_review",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P7",
+            "metric_code": "P7-M01",
+            "metric_name": "Data Age vs. Decay Rate",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: freshness profile, last update or collection date.",
+            "findings": [
+                {
+                    "missing_input": "last_update_or_collection_date"
+                },
+                {
+                    "missing_input": "freshness_profile"
+                }
+            ],
+            "recommendations": [
+                "Provide freshness profile.",
+                "Provide last update or collection date."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: freshness profile, last update or collection date.",
+                "execution_method": "configured",
+                "missing_inputs": [
+                    "freshness_profile",
+                    "last_update_or_collection_date"
+                ],
+                "provenance": {
+                    "source_ids": [],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P7",
+            "metric_code": "P7-M02",
+            "metric_name": "Update Frequency Match",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "medium",
+            "status": "ready_for_review",
+            "explanation": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+            "findings": [
+                {
+                    "missing_input": "version_history"
+                }
+            ],
+            "recommendations": [
+                "Review the system finding and its source coverage before acceptance."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "medium",
+                "score": null,
+                "calculated_value": {
+                    "summary": {
+                        "total": 1,
+                        "demonstrated": 1,
+                        "not_demonstrated": 0
+                    },
+                    "evaluation_checks": [
+                        {
+                            "key": "version_history",
+                            "label": "Version history",
+                            "status": "demonstrated",
+                            "evidence": [
+                                {
+                                    "excerpt": "",
+                                    "source_id": "16a9d0ec-9463-426b-ae81-7a4b9c4d0730",
+                                    "source_uri": "",
+                                    "source_name": "LICENCE_EVIDENCE.md",
+                                    "source_type": "licence"
+                                }
+                            ],
+                            "explanation": "A required source or structured input was supplied.",
+                            "assessment_input_id": null
+                        }
+                    ]
+                },
+                "rationale": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [],
+                "provenance": {
+                    "source_ids": [
+                        "16a9d0ec-9463-426b-ae81-7a4b9c4d0730"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "ready_for_review",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P7",
+            "metric_code": "P7-M03",
+            "metric_name": "Timestamp Completeness",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: timestamp fields.",
+            "findings": [
+                {
+                    "missing_input": "dataset_access"
+                },
+                {
+                    "missing_input": "timestamp_fields"
+                }
+            ],
+            "recommendations": [
+                "Provide timestamp fields."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: timestamp fields.",
+                "execution_method": "configured",
+                "missing_inputs": [
+                    "timestamp_fields"
+                ],
+                "provenance": {
+                    "source_ids": [
+                        "0c55fb29-5d10-493f-8b3d-b3490f94aab9"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P7",
+            "metric_code": "P7-M04",
+            "metric_name": "Version Control Score",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "medium",
+            "status": "ready_for_review",
+            "explanation": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+            "findings": [
+                {
+                    "missing_input": "version_history"
+                }
+            ],
+            "recommendations": [
+                "Review the system finding and its source coverage before acceptance."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "medium",
+                "score": null,
+                "calculated_value": {
+                    "summary": {
+                        "total": 1,
+                        "demonstrated": 1,
+                        "not_demonstrated": 0
+                    },
+                    "evaluation_checks": [
+                        {
+                            "key": "version_history",
+                            "label": "Version history",
+                            "status": "demonstrated",
+                            "evidence": [
+                                {
+                                    "excerpt": "",
+                                    "source_id": "16a9d0ec-9463-426b-ae81-7a4b9c4d0730",
+                                    "source_uri": "",
+                                    "source_name": "LICENCE_EVIDENCE.md",
+                                    "source_type": "licence"
+                                }
+                            ],
+                            "explanation": "A required source or structured input was supplied.",
+                            "assessment_input_id": null
+                        }
+                    ]
+                },
+                "rationale": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [],
+                "provenance": {
+                    "source_ids": [
+                        "16a9d0ec-9463-426b-ae81-7a4b9c4d0730"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "ready_for_review",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P7",
+            "metric_code": "P7-M05",
+            "metric_name": "Structural Break Control",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: timestamp fields.",
+            "findings": [
+                {
+                    "missing_input": "dataset_access"
+                },
+                {
+                    "missing_input": "timestamp_fields"
+                }
+            ],
+            "recommendations": [
+                "Provide timestamp fields."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: timestamp fields.",
+                "execution_method": "configured",
+                "missing_inputs": [
+                    "timestamp_fields"
+                ],
+                "provenance": {
+                    "source_ids": [
+                        "0c55fb29-5d10-493f-8b3d-b3490f94aab9"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P7",
+            "metric_code": "P7-M06",
+            "metric_name": "Data Age Appropriateness",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: last update or collection date.",
+            "findings": [
+                {
+                    "missing_input": "last_update_or_collection_date"
+                }
+            ],
+            "recommendations": [
+                "Provide last update or collection date."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: last update or collection date.",
+                "execution_method": "expert_review",
+                "missing_inputs": [
+                    "last_update_or_collection_date"
+                ],
+                "provenance": {
+                    "source_ids": [],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P7",
+            "metric_code": "P7-M07",
+            "metric_name": "Break Documentation Review",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "medium",
+            "status": "ready_for_review",
+            "explanation": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+            "findings": [
+                {
+                    "missing_input": "documentation"
+                }
+            ],
+            "recommendations": [
+                "Review the system finding and its source coverage before acceptance."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "medium",
+                "score": null,
+                "calculated_value": {
+                    "summary": {
+                        "total": 1,
+                        "demonstrated": 1,
+                        "not_demonstrated": 0
+                    },
+                    "evaluation_checks": [
+                        {
+                            "key": "documentation",
+                            "label": "Documentation",
+                            "status": "demonstrated",
+                            "evidence": [
+                                {
+                                    "excerpt": "",
+                                    "source_id": "b8a2aa86-0895-4da4-85bc-79b36d7358b2",
+                                    "source_uri": "",
+                                    "source_name": "DATA_DICTIONARY.md",
+                                    "source_type": "metadata"
+                                },
+                                {
+                                    "excerpt": "",
+                                    "source_id": "8835c5eb-572c-4973-8784-f5e109c6fb49",
+                                    "source_uri": "",
+                                    "source_name": "README_official.md",
+                                    "source_type": "documentation"
+                                }
+                            ],
+                            "explanation": "A required source or structured input was supplied.",
+                            "assessment_input_id": null
+                        }
+                    ]
+                },
+                "rationale": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [],
+                "provenance": {
+                    "source_ids": [
+                        "b8a2aa86-0895-4da4-85bc-79b36d7358b2",
+                        "8835c5eb-572c-4973-8784-f5e109c6fb49"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "ready_for_review",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P7",
+            "metric_code": "P7-M08",
+            "metric_name": "Context-Specific Change Documentation",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "medium",
+            "status": "ready_for_review",
+            "explanation": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+            "findings": [
+                {
+                    "missing_input": "documentation"
+                }
+            ],
+            "recommendations": [
+                "Review the system finding and its source coverage before acceptance."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "medium",
+                "score": null,
+                "calculated_value": {
+                    "summary": {
+                        "total": 1,
+                        "demonstrated": 1,
+                        "not_demonstrated": 0
+                    },
+                    "evaluation_checks": [
+                        {
+                            "key": "documentation",
+                            "label": "Documentation",
+                            "status": "demonstrated",
+                            "evidence": [
+                                {
+                                    "excerpt": "",
+                                    "source_id": "b8a2aa86-0895-4da4-85bc-79b36d7358b2",
+                                    "source_uri": "",
+                                    "source_name": "DATA_DICTIONARY.md",
+                                    "source_type": "metadata"
+                                },
+                                {
+                                    "excerpt": "",
+                                    "source_id": "8835c5eb-572c-4973-8784-f5e109c6fb49",
+                                    "source_uri": "",
+                                    "source_name": "README_official.md",
+                                    "source_type": "documentation"
+                                }
+                            ],
+                            "explanation": "A required source or structured input was supplied.",
+                            "assessment_input_id": null
+                        }
+                    ]
+                },
+                "rationale": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [],
+                "provenance": {
+                    "source_ids": [
+                        "b8a2aa86-0895-4da4-85bc-79b36d7358b2",
+                        "8835c5eb-572c-4973-8784-f5e109c6fb49"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "ready_for_review",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P8",
+            "metric_code": "P8-M01",
+            "metric_name": "Primary Metric vs. Naive Baseline",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: target definition.",
+            "findings": [],
+            "recommendations": [
+                "Provide target definition."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: target definition.",
+                "execution_method": "configured",
+                "missing_inputs": [
+                    "target_definition"
+                ],
+                "provenance": {
+                    "source_ids": [
+                        "0c55fb29-5d10-493f-8b3d-b3490f94aab9"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P8",
+            "metric_code": "P8-M02",
+            "metric_name": "Learning Curve Trend",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: target definition.",
+            "findings": [],
+            "recommendations": [
+                "Provide target definition."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: target definition.",
+                "execution_method": "configured",
+                "missing_inputs": [
+                    "target_definition"
+                ],
+                "provenance": {
+                    "source_ids": [
+                        "0c55fb29-5d10-493f-8b3d-b3490f94aab9"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P8",
+            "metric_code": "P8-M03",
+            "metric_name": "Subgroup Performance Parity",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: sensitive attributes, target definition.",
+            "findings": [],
+            "recommendations": [
+                "Provide sensitive attributes.",
+                "Provide target definition."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: sensitive attributes, target definition.",
+                "execution_method": "configured",
+                "missing_inputs": [
+                    "sensitive_attributes",
+                    "target_definition"
+                ],
+                "provenance": {
+                    "source_ids": [
+                        "0c55fb29-5d10-493f-8b3d-b3490f94aab9"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P8",
+            "metric_code": "P8-M04",
+            "metric_name": "Robustness to Noise",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: target definition.",
+            "findings": [],
+            "recommendations": [
+                "Provide target definition."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: target definition.",
+                "execution_method": "configured",
+                "missing_inputs": [
+                    "target_definition"
+                ],
+                "provenance": {
+                    "source_ids": [
+                        "0c55fb29-5d10-493f-8b3d-b3490f94aab9"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P8",
+            "metric_code": "P8-M05",
+            "metric_name": "Feature Importance Stability",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: target definition.",
+            "findings": [],
+            "recommendations": [
+                "Provide target definition."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: target definition.",
+                "execution_method": "configured",
+                "missing_inputs": [
+                    "target_definition"
+                ],
+                "provenance": {
+                    "source_ids": [
+                        "0c55fb29-5d10-493f-8b3d-b3490f94aab9"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P8",
+            "metric_code": "P8-M06",
+            "metric_name": "Interpretation Category",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: learnability results.",
+            "findings": [
+                {
+                    "missing_input": "learnability_results"
+                }
+            ],
+            "recommendations": [
+                "Provide learnability results."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: learnability results.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [
+                    "learnability_results"
+                ],
+                "provenance": {
+                    "source_ids": [],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P8",
+            "metric_code": "P8-M07",
+            "metric_name": "Recommended Action Notes",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: learnability results.",
+            "findings": [
+                {
+                    "missing_input": "learnability_results"
+                }
+            ],
+            "recommendations": [
+                "Provide learnability results."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: learnability results.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [
+                    "learnability_results"
+                ],
+                "provenance": {
+                    "source_ids": [],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P9",
+            "metric_code": "P9-M01",
+            "metric_name": "Discoverability Score",
+            "applicability": "applicable",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "medium",
+            "status": "ready_for_review",
+            "explanation": "The system evaluated 6 explicit discoverability checks: 3 demonstrated, 1 partially demonstrated, 2 not demonstrated, and 0 not checked. Researcher confirmation is required.",
+            "findings": [],
+            "recommendations": [
+                "Review the system finding and its source coverage before acceptance."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "medium",
+                "score": null,
+                "calculated_value": {
+                    "summary": {
+                        "total": 6,
+                        "not_checked": 0,
+                        "demonstrated": 3,
+                        "not_demonstrated": 2,
+                        "partially_demonstrated": 1
+                    },
+                    "evaluation_checks": [
+                        {
+                            "key": "public_landing_page",
+                            "label": "Persistent public landing page exists",
+                            "status": "demonstrated",
+                            "evidence": [
+                                {
+                                    "excerpt": "",
+                                    "source_uri": "https://huggingface.co/datasets/data354/Africa_Biomass_dataset",
+                                    "source_name": "https://huggingface.co/datasets/data354/Africa_Biomass_dataset"
+                                }
+                            ],
+                            "explanation": "A public dataset or source URL was supplied."
+                        },
+                        {
+                            "key": "stable_identifier",
+                            "label": "Stable identifier such as a DOI or handle exists",
+                            "status": "not_demonstrated",
+                            "evidence": [],
+                            "explanation": "The supplied material does not establish this check."
+                        },
+                        {
+                            "key": "recognized_repository",
+                            "label": "Dataset is hosted in a recognised repository",
+                            "status": "demonstrated",
+                            "evidence": [
+                                {
+                                    "excerpt": "",
+                                    "source_uri": "https://huggingface.co/datasets/data354/Africa_Biomass_dataset",
+                                    "source_name": "https://huggingface.co/datasets/data354/Africa_Biomass_dataset"
+                                }
+                            ],
+                            "explanation": "The URL uses a recognised public repository host."
+                        },
+                        {
+                            "key": "registry_catalogue",
+                            "label": "Dataset is listed in a registry or catalogue",
+                            "status": "not_demonstrated",
+                            "evidence": [],
+                            "explanation": "The supplied material does not establish this check."
+                        },
+                        {
+                            "key": "discovery_metadata",
+                            "label": "Discovery metadata includes a usable title and description",
+                            "status": "partially_demonstrated",
+                            "evidence": [
+                                {
+                                    "excerpt": "",
+                                    "source_id": "b8a2aa86-0895-4da4-85bc-79b36d7358b2",
+                                    "source_uri": "",
+                                    "source_name": "DATA_DICTIONARY.md",
+                                    "source_type": "metadata"
+                                },
+                                {
+                                    "excerpt": "",
+                                    "source_id": "8835c5eb-572c-4973-8784-f5e109c6fb49",
+                                    "source_uri": "",
+                                    "source_name": "README_official.md",
+                                    "source_type": "documentation"
+                                }
+                            ],
+                            "explanation": "Metadata or documentation was supplied for review."
+                        },
+                        {
+                            "key": "search_surface",
+                            "label": "Findability through a relevant search surface is evidenced",
+                            "status": "demonstrated",
+                            "evidence": [
+                                {
+                                    "excerpt": "# Africa Biomass dataset — researcher-derived data dictionary Status: **Generated test support file; not publisher-authored metadata.** This dictionary was derived from the official dataset card and the downloaded CSV on 4 August 2026. Use it to test metadat",
+                                    "source_id": "b8a2aa86-0895-4da4-85bc-79b36d7358b2",
+                                    "source_uri": "",
+                                    "source_name": "DATA_DICTIONARY.md",
+                                    "source_type": "metadata"
+                                },
+                                {
+                                    "excerpt": "# Africa Biomass dataset — licence evidence note Status: **Researcher-generated evidence note based on the publisher's dataset page.** The Hugging Face dataset card declares the licence as **CC BY 4.0**. - Dataset page: https://huggingface.co/datasets/data3",
+                                    "source_id": "16a9d0ec-9463-426b-ae81-7a4b9c4d0730",
+                                    "source_uri": "",
+                                    "source_name": "LICENCE_EVIDENCE.md",
+                                    "source_type": "licence"
+                                }
+                            ],
+                            "explanation": "The supplied material explicitly addresses search or findability."
+                        }
+                    ]
+                },
+                "rationale": "The system evaluated 6 explicit discoverability checks: 3 demonstrated, 1 partially demonstrated, 2 not demonstrated, and 0 not checked. Researcher confirmation is required.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [],
+                "provenance": {
+                    "source_ids": [],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "ready_for_review",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P9",
+            "metric_code": "P9-M02",
+            "metric_name": "Licence Clarity Score",
+            "applicability": "applicable",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "medium",
+            "status": "ready_for_review",
+            "explanation": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+            "findings": [],
+            "recommendations": [
+                "Review the system finding and its source coverage before acceptance."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "medium",
+                "score": null,
+                "calculated_value": {
+                    "summary": {
+                        "total": 1,
+                        "demonstrated": 1,
+                        "not_demonstrated": 0
+                    },
+                    "evaluation_checks": [
+                        {
+                            "key": "licence_evidence",
+                            "label": "Licence evidence",
+                            "status": "demonstrated",
+                            "evidence": [
+                                {
+                                    "excerpt": "",
+                                    "source_id": "16a9d0ec-9463-426b-ae81-7a4b9c4d0730",
+                                    "source_uri": "",
+                                    "source_name": "LICENCE_EVIDENCE.md",
+                                    "source_type": "licence"
+                                }
+                            ],
+                            "explanation": "A required source or structured input was supplied.",
+                            "assessment_input_id": null
+                        }
+                    ]
+                },
+                "rationale": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [],
+                "provenance": {
+                    "source_ids": [
+                        "16a9d0ec-9463-426b-ae81-7a4b9c4d0730"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "ready_for_review",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P9",
+            "metric_code": "P9-M03",
+            "metric_name": "Security Assessment",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: security documentation.",
+            "findings": [
+                {
+                    "missing_input": "security_documentation"
+                }
+            ],
+            "recommendations": [
+                "Provide security documentation."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: security documentation.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [
+                    "security_documentation"
+                ],
+                "provenance": {
+                    "source_ids": [],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P9",
+            "metric_code": "P9-M04",
+            "metric_name": "Version History Completeness",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "medium",
+            "status": "ready_for_review",
+            "explanation": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+            "findings": [
+                {
+                    "missing_input": "version_history"
+                }
+            ],
+            "recommendations": [
+                "Review the system finding and its source coverage before acceptance."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "medium",
+                "score": null,
+                "calculated_value": {
+                    "summary": {
+                        "total": 1,
+                        "demonstrated": 1,
+                        "not_demonstrated": 0
+                    },
+                    "evaluation_checks": [
+                        {
+                            "key": "version_history",
+                            "label": "Version history",
+                            "status": "demonstrated",
+                            "evidence": [
+                                {
+                                    "excerpt": "",
+                                    "source_id": "16a9d0ec-9463-426b-ae81-7a4b9c4d0730",
+                                    "source_uri": "",
+                                    "source_name": "LICENCE_EVIDENCE.md",
+                                    "source_type": "licence"
+                                }
+                            ],
+                            "explanation": "A required source or structured input was supplied.",
+                            "assessment_input_id": null
+                        }
+                    ]
+                },
+                "rationale": "Required inputs are present, but this metric has no implemented numeric scoring strategy. Review the explicit checks and supporting evidence before recording a conclusion.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [],
+                "provenance": {
+                    "source_ids": [
+                        "16a9d0ec-9463-426b-ae81-7a4b9c4d0730"
+                    ],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "ready_for_review",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P9",
+            "metric_code": "P9-M05",
+            "metric_name": "Institutional Capacity Assessment",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: institutional evidence.",
+            "findings": [
+                {
+                    "missing_input": "institutional_evidence"
+                }
+            ],
+            "recommendations": [
+                "Provide institutional evidence."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: institutional evidence.",
+                "execution_method": "expert_review",
+                "missing_inputs": [
+                    "institutional_evidence"
+                ],
+                "provenance": {
+                    "source_ids": [],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P9",
+            "metric_code": "P9-M06",
+            "metric_name": "Sustainability Plan Documentation",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: sustainability documentation.",
+            "findings": [
+                {
+                    "missing_input": "sustainability_documentation"
+                }
+            ],
+            "recommendations": [
+                "Provide sustainability documentation."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: sustainability documentation.",
+                "execution_method": "evidence_assisted",
+                "missing_inputs": [
+                    "sustainability_documentation"
+                ],
+                "provenance": {
+                    "source_ids": [],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P9",
+            "metric_code": "P9-M07",
+            "metric_name": "Economic Value Alignment",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: governance documentation.",
+            "findings": [
+                {
+                    "missing_input": "governance_documentation"
+                }
+            ],
+            "recommendations": [
+                "Provide governance documentation."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: governance documentation.",
+                "execution_method": "expert_review",
+                "missing_inputs": [
+                    "governance_documentation"
+                ],
+                "provenance": {
+                    "source_ids": [],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        },
+        {
+            "pillar_code": "P9",
+            "metric_code": "P9-M08",
+            "metric_name": "Environmental Impact Assessment",
+            "applicability": "insufficient_information",
+            "automated_score": null,
+            "accepted_score": null,
+            "effective_score": null,
+            "accepted_finding": null,
+            "accepted_confidence": null,
+            "confidence": "low",
+            "status": "missing_input",
+            "explanation": "Missing required input: infrastructure metadata.",
+            "findings": [
+                {
+                    "missing_input": "infrastructure_metadata"
+                }
+            ],
+            "recommendations": [
+                "Provide infrastructure metadata."
+            ],
+            "system_suggestion": {
+                "finding": "insufficient_evidence",
+                "confidence": "low",
+                "score": null,
+                "calculated_value": null,
+                "rationale": "Missing required input: infrastructure metadata.",
+                "execution_method": "expert_review",
+                "missing_inputs": [
+                    "infrastructure_metadata"
+                ],
+                "provenance": {
+                    "source_ids": [],
+                    "dataset_profile": {
+                        "source_id": "0c55fb29-5d10-493f-8b3d-b3490f94aab9",
+                        "source_name": "Africa_Biomass_dataset.csv",
+                        "missing_values": 0,
+                        "values_examined": 1315,
+                        "records_examined": 263,
+                        "duplicate_records": 0,
+                        "duplicate_percentage": 0.0,
+                        "completeness_percentage": 100.0
+                    }
+                },
+                "review_status": "missing_input",
+                "revision": 1
+            },
+            "evidence": []
+        }
+    ]
+}
