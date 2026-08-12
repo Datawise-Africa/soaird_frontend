@@ -110,6 +110,7 @@ export function DashboardSidebar({
             <NavLink
               key={item.to}
               to={item.to}
+              prefetch="intent"
               onClick={onClose}
               className={({ isActive }) =>
                 cn(

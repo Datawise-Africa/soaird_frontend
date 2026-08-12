@@ -26,13 +26,12 @@ import {
   UserCheck,
   X,
 } from 'lucide-react';
+import { useQueries, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import { ApiError, api, liveApiEnabled } from '~/lib/api/soaird-client';
 import type {
   Assessment as ApiAssessment,
   AssessmentReport,
-  CohortAnalytics,
-  Dataset as ApiDataset,
 } from '~/lib/api/soaird-client';
 import { useEffect } from 'react';
 import { useWorkspace } from '~/features/workspaces/workspace-context';
@@ -41,6 +40,10 @@ import { DatasetRecordDialog } from '~/features/datasets/dataset-record-dialog';
 import { AssessmentSetupDialog } from '~/features/assessments/assessment-setup-dialog';
 import { AssessmentDatasetDialog } from '~/features/assessments/assessment-dataset-dialog';
 import { AssessmentQuestionnaireDialog } from '~/features/assessments/assessment-questionnaire-dialog';
+import {
+  CardGridSkeleton,
+  LoadingSkeleton,
+} from '~/components/loading-indicator';
 
 type View =
   | 'overview'
@@ -176,42 +179,38 @@ function DatasetsView() {
   const [assessmentDatasetCode, setAssessmentDatasetCode] = useState<
     string | null
   >(null);
-  const [records, setRecords] = useState<DatasetRecord[]>([]);
-  const [totalRecords, setTotalRecords] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState('');
-  const [refreshVersion, setRefreshVersion] = useState(0);
   const canManage =
     activeWorkspace.personal ||
     activeWorkspace.roles.some(
       (role) => role === 'admin' || role === 'research_lead'
     );
 
-  useEffect(() => {
-    api
-      .datasets(scopeQuery('page_size=100'))
-      .then((response) => {
-        setTotalRecords(response.count);
-        setRecords(
-          response.results.map((item) => ({
-            code: String(item.dataset_code ?? ''),
-            name: String(item.name ?? 'Untitled dataset'),
-            country: String(item.country ?? 'Not specified'),
-            region: String(item.region ?? 'Not specified'),
-            domain: String(item.domain ?? 'Other'),
-            modality: String(item.modality ?? 'Other'),
-            owner: String(item.owner ?? 'Not specified'),
-            status: String(item.status ?? 'Registered').replaceAll('_', ' '),
-            readiness: null,
-            updated: item.updated_at
-              ? new Date(String(item.updated_at)).toLocaleDateString()
-              : 'Recently',
-          }))
-        );
-      })
-      .catch((error: Error) => setLoadError(error.message))
-      .finally(() => setLoading(false));
-  }, [scopeQuery, refreshVersion]);
+  const datasetScope = scopeQuery('page_size=100');
+  const datasetsQuery = useQuery({
+    queryKey: ['datasets', datasetScope],
+    queryFn: () => api.datasets(datasetScope),
+  });
+  const records = useMemo(
+    () =>
+      (datasetsQuery.data?.results ?? []).map((item) => ({
+        code: String(item.dataset_code ?? ''),
+        name: String(item.name ?? 'Untitled dataset'),
+        country: String(item.country ?? 'Not specified'),
+        region: String(item.region ?? 'Not specified'),
+        domain: String(item.domain ?? 'Other'),
+        modality: String(item.modality ?? 'Other'),
+        owner: String(item.owner ?? 'Not specified'),
+        status: String(item.status ?? 'Registered').replaceAll('_', ' '),
+        readiness: null,
+        updated: item.updated_at
+          ? new Date(String(item.updated_at)).toLocaleDateString()
+          : 'Recently',
+      })),
+    [datasetsQuery.data]
+  );
+  const totalRecords = datasetsQuery.data?.count ?? 0;
+  const loading = datasetsQuery.isPending;
+  const loadError = datasetsQuery.error?.message ?? '';
   const countryCount = new Set(
     records.map((item) => item.country).filter(Boolean)
   ).size;
@@ -237,9 +236,7 @@ function DatasetsView() {
         title="Find and understand African datasets"
         description="A shared catalogue with ownership, provenance and AI-readiness evidence explained in plain language."
         action={
-          <DatasetActions
-            onChanged={() => setRefreshVersion((value) => value + 1)}
-          />
+          <DatasetActions onChanged={() => void datasetsQuery.refetch()} />
         }
       />
 
@@ -285,11 +282,7 @@ function DatasetsView() {
             <AlertCircle size={15} /> {loadError}
           </div>
         ) : null}
-        {loading ? (
-          <div className="inline-loading">
-            Loading datasets from the registry…
-          </div>
-        ) : null}
+        {loading ? <LoadingSkeleton label="Loading datasets" /> : null}
         <div className="table-tools">
           <label className="table-search">
             <Search size={16} />
@@ -476,7 +469,7 @@ function DatasetsView() {
         datasetCode={detailCode}
         canManage={canManage}
         onOpenChange={(open) => !open && setDetailCode(null)}
-        onUpdated={() => setRefreshVersion((value) => value + 1)}
+        onUpdated={() => void datasetsQuery.refetch()}
         onStartAssessment={setAssessmentDatasetCode}
       />
       <AssessmentSetupDialog
@@ -489,21 +482,16 @@ function DatasetsView() {
 
 function AssessmentsView() {
   const { scopeQuery } = useWorkspace();
+  const queryClient = useQueryClient();
   const [tab, setTab] = useState('Active');
-  const [records, setRecords] = useState<ApiAssessment[]>([]);
-  const [datasetMap, setDatasetMap] = useState<Record<string, ApiDataset>>({});
-  const [datasets, setDatasets] = useState<ApiDataset[]>([]);
-  const [datasetsLoading, setDatasetsLoading] = useState(true);
   const [datasetChooserOpen, setDatasetChooserOpen] = useState(false);
   const [assessmentDatasetCode, setAssessmentDatasetCode] = useState<
     string | null
   >(null);
-  const [refreshVersion, setRefreshVersion] = useState(0);
   const [selected, setSelected] = useState<ApiAssessment | null>(null);
   const [questionnaireRunId, setQuestionnaireRunId] = useState<string | null>(
     null
   );
-  const [report, setReport] = useState<AssessmentReport | null>(null);
   const [runState, setRunState] = useState<
     Record<
       string,
@@ -518,63 +506,73 @@ function AssessmentsView() {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
 
+  const assessmentScope = scopeQuery('page_size=100');
+  const assessmentsQuery = useQuery({
+    queryKey: ['assessments-workspace', assessmentScope],
+    enabled: liveApiEnabled,
+    queryFn: async () => {
+      const [assessmentResponse, datasetResponse] = await Promise.all([
+        api.assessments(assessmentScope),
+        api.datasets(assessmentScope),
+      ]);
+      return { assessmentResponse, datasetResponse };
+    },
+  });
+  const records = assessmentsQuery.data?.assessmentResponse.results ?? [];
+  const datasets = useMemo(
+    () => assessmentsQuery.data?.datasetResponse.results ?? [],
+    [assessmentsQuery.data]
+  );
+  const datasetMap = useMemo(
+    () =>
+      Object.fromEntries(
+        datasets.map((dataset) => [dataset.dataset_code, dataset])
+      ),
+    [datasets]
+  );
+  const datasetsLoading = assessmentsQuery.isPending;
+  const refetchAssessments = assessmentsQuery.refetch;
+  const selectedRun = selected ? runState[selected.assessment_code] : undefined;
+  const selectedReportQuery = useQuery({
+    queryKey: ['assessment-report', selectedRun?.id],
+    queryFn: () => api.assessmentReport(selectedRun!.id),
+    enabled: selectedRun?.status === 'completed',
+    staleTime: 1000 * 60 * 10,
+  });
+  const report = selectedReportQuery.data ?? null;
+
   useEffect(() => {
-    if (!liveApiEnabled) return;
-    setDatasetsLoading(true);
-    Promise.all([
-      api.assessments(scopeQuery('page_size=100')),
-      api.datasets(scopeQuery('page_size=100')),
-    ])
-      .then(([assessmentResponse, datasetResponse]) => {
-        setRecords(assessmentResponse.results);
-        setDatasets(datasetResponse.results);
-        setDatasetMap(
-          Object.fromEntries(
-            datasetResponse.results.map((dataset) => [
-              dataset.dataset_code,
-              dataset,
-            ])
-          )
-        );
-        setRunState(
-          Object.fromEntries(
-            assessmentResponse.results
-              .filter((assessment) => assessment.latest_run)
-              .map((assessment) => {
-                const run = assessment.latest_run!;
-                return [
-                  assessment.assessment_code,
-                  {
-                    id: run.id,
-                    status: run.status,
-                    current: run.progress_current,
-                    total: run.progress_total,
-                  },
-                ];
-              })
-          )
-        );
-      })
-      .catch((error: Error) => setMessage(error.message))
-      .finally(() => setDatasetsLoading(false));
-  }, [scopeQuery, refreshVersion]);
+    const assessmentResponse = assessmentsQuery.data?.assessmentResponse;
+    if (!assessmentResponse) return;
+    setRunState(
+      Object.fromEntries(
+        assessmentResponse.results
+          .filter((assessment) => assessment.latest_run)
+          .map((assessment) => {
+            const run = assessment.latest_run!;
+            return [
+              assessment.assessment_code,
+              {
+                id: run.id,
+                status: run.status,
+                current: run.progress_current,
+                total: run.progress_total,
+              },
+            ];
+          })
+      )
+    );
+  }, [assessmentsQuery.data]);
+
+  useEffect(() => {
+    if (assessmentsQuery.error) setMessage(assessmentsQuery.error.message);
+  }, [assessmentsQuery.error]);
 
   const beginAssessment = () => setDatasetChooserOpen(true);
-
-  useEffect(() => {
-    if (!selected) return;
-    const run = runState[selected.assessment_code];
-    if (!run || run.status !== 'completed') return;
-    api
-      .assessmentReport(run.id)
-      .then(setReport)
-      .catch(() => undefined);
-  }, [selected, runState]);
 
   function openWorkbench(assessment: ApiAssessment) {
     const run = runState[assessment.assessment_code];
     if (!run || run.status !== 'completed') return;
-    setReport(null);
     setSelected(null);
     setQuestionnaireRunId(run.id);
   }
@@ -632,14 +630,14 @@ function AssessmentsView() {
               setMessage(
                 'Applicability check complete. The assessment workbench is ready to open.'
               );
-              setRefreshVersion((value) => value + 1);
+              void refetchAssessments();
             }
           })
           .catch(() => undefined);
       });
     }, 4000);
     return () => window.clearInterval(timer);
-  }, [runState]);
+  }, [refetchAssessments, runState]);
 
   return (
     <>
@@ -673,6 +671,10 @@ function AssessmentsView() {
           </div>
         ))}
       </section>
+
+      {datasetsLoading ? (
+        <LoadingSkeleton label="Loading assessments" rows={5} />
+      ) : null}
 
       <div className="view-tabs">
         {['Active', 'Ready for review', 'Completed', 'All assessments'].map(
@@ -746,7 +748,6 @@ function AssessmentsView() {
                 </span>
                 <button
                   onClick={() => {
-                    setReport(null);
                     setSelected(item);
                   }}
                 >
@@ -785,7 +786,6 @@ function AssessmentsView() {
           <button
             className="modal-scrim"
             onClick={() => {
-              setReport(null);
               setSelected(null);
             }}
             aria-label="Close"
@@ -794,7 +794,6 @@ function AssessmentsView() {
             <button
               className="quick-close"
               onClick={() => {
-                setReport(null);
                 setSelected(null);
               }}
               aria-label="Close"
@@ -815,6 +814,11 @@ function AssessmentsView() {
                     : 'Run applicability, then use the workbench to add evidence, review findings and complete the assessment.'}
               </p>
             </header>
+
+            {selectedReportQuery.isPending &&
+            selectedRun?.status === 'completed' ? (
+              <LoadingSkeleton label="Loading assessment report" rows={4} />
+            ) : null}
 
             {report ? (
               <>
@@ -998,7 +1002,7 @@ function AssessmentsView() {
       <AssessmentSetupDialog
         datasetCode={assessmentDatasetCode}
         onOpenChange={(open) => !open && setAssessmentDatasetCode(null)}
-        onCreated={() => setRefreshVersion((value) => value + 1)}
+        onCreated={() => void assessmentsQuery.refetch()}
       />
       <AssessmentQuestionnaireDialog
         runId={questionnaireRunId}
@@ -1010,9 +1014,13 @@ function AssessmentsView() {
         }
         onOpenChange={(open) => {
           if (!open) {
+            if (questionnaireRunId) {
+              void queryClient.invalidateQueries({
+                queryKey: ['assessment-report', questionnaireRunId],
+              });
+            }
             setQuestionnaireRunId(null);
-            setReport(null);
-            setRefreshVersion((value) => value + 1);
+            void assessmentsQuery.refetch();
           }
         }}
       />
@@ -1021,25 +1029,13 @@ function AssessmentsView() {
 }
 
 function ReviewsView() {
-  const [assignments, setAssignments] = useState<
-    Array<{
-      id: string;
-      assessment: string;
-      role: string;
-      status: string;
-      created_at: string;
-    }>
-  >([]);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState('');
-
-  useEffect(() => {
-    api
-      .reviewAssignments('page_size=100')
-      .then((response) => setAssignments(response.results))
-      .catch((error: Error) => setLoadError(error.message))
-      .finally(() => setLoading(false));
-  }, []);
+  const assignmentsQuery = useQuery({
+    queryKey: ['review-assignments', 'page_size=100'],
+    queryFn: () => api.reviewAssignments('page_size=100'),
+  });
+  const assignments = assignmentsQuery.data?.results ?? [];
+  const loading = assignmentsQuery.isPending;
+  const loadError = assignmentsQuery.error?.message ?? '';
 
   return (
     <>
@@ -1062,7 +1058,7 @@ function ReviewsView() {
           </div>
         ) : null}
         {loading ? (
-          <div className="inline-loading">Loading review assignments…</div>
+          <LoadingSkeleton label="Loading review assignments" />
         ) : null}
         {!loading && !loadError && assignments.length === 0 ? (
           <div className="assessment-empty-state">
@@ -1108,53 +1104,48 @@ function ReviewsView() {
 function ReportsView() {
   const { scopeQuery } = useWorkspace();
   const [group, setGroup] = useState('Domain');
-  const [analytics, setAnalytics] = useState<CohortAnalytics | null>(null);
-  const [analyticsError, setAnalyticsError] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [assessmentReports, setAssessmentReports] = useState<
-    AssessmentReport[]
-  >([]);
   const [selectedReport, setSelectedReport] = useState<AssessmentReport | null>(
     null
   );
-
-  useEffect(() => {
-    setLoading(true);
-    setAnalyticsError('');
-    api
-      .cohortAnalytics(
-        group.toLowerCase() as 'country' | 'region' | 'domain' | 'modality',
-        scopeQuery()
-      )
-      .then(setAnalytics)
-      .catch((error: Error) => setAnalyticsError(error.message))
-      .finally(() => setLoading(false));
-  }, [group, scopeQuery]);
-
-  useEffect(() => {
-    api
-      .assessments(scopeQuery('page_size=100'))
-      .then(async (response) => {
-        const completed = response.results.filter(
-          (assessment) => assessment.latest_run
-        );
-        const reports = await Promise.allSettled(
-          completed.map((assessment) =>
-            api.assessmentReport(assessment.latest_run!.id)
-          )
-        );
-        setAssessmentReports(
-          reports.flatMap((result) =>
-            result.status === 'fulfilled' &&
-            (result.value.report_state === 'final' ||
-              result.value.summary.automation_status !== 'not_started')
-              ? [result.value]
-              : []
-          )
-        );
-      })
-      .catch(() => setAssessmentReports([]));
-  }, [scopeQuery]);
+  const reportScope = scopeQuery();
+  const groupKey = group.toLowerCase() as
+    | 'country'
+    | 'region'
+    | 'domain'
+    | 'modality';
+  const analyticsQuery = useQuery({
+    queryKey: ['cohort-analytics', groupKey, reportScope],
+    queryFn: () => api.cohortAnalytics(groupKey, reportScope),
+  });
+  const reportIndexQuery = useQuery({
+    queryKey: ['report-assessments', reportScope],
+    queryFn: () => api.assessments(scopeQuery('page_size=100')),
+  });
+  const reportableAssessments =
+    reportIndexQuery.data?.results.filter(
+      (assessment) => assessment.latest_run
+    ) ?? [];
+  const reportQueries = useQueries({
+    queries: reportableAssessments.map((assessment) => ({
+      queryKey: ['assessment-report', assessment.latest_run!.id],
+      queryFn: () => api.assessmentReport(assessment.latest_run!.id),
+      staleTime: 1000 * 60 * 10,
+    })),
+  });
+  const analytics = analyticsQuery.data ?? null;
+  const analyticsError = analyticsQuery.error?.message ?? '';
+  const loading = analyticsQuery.isPending;
+  const assessmentReports = reportQueries.flatMap((query) => {
+    const report = query.data;
+    return report &&
+      (report.report_state === 'final' ||
+        report.summary.automation_status !== 'not_started')
+      ? [report]
+      : [];
+  });
+  const reportsLoading =
+    reportIndexQuery.isPending ||
+    reportQueries.some((query) => query.isPending);
 
   const chartRows = (analytics?.cohorts ?? [])
     .filter((item) => !item.suppressed && item.statistics?.median !== null)
@@ -1194,6 +1185,10 @@ function ReportsView() {
         title="See where readiness is advancing—and where it is not"
         description="Compare responsibly, disclose coverage and export analysis with the framework version attached."
       />
+
+      {loading ? (
+        <CardGridSkeleton cards={4} label="Loading report insights" />
+      ) : null}
 
       <section className="report-kpis">
         <article>
@@ -1466,7 +1461,10 @@ function ReportsView() {
               </div>
             </article>
           ))}
-          {!loading && assessmentReports.length === 0 ? (
+          {reportsLoading ? (
+            <LoadingSkeleton label="Loading dataset reports" rows={3} />
+          ) : null}
+          {!reportsLoading && assessmentReports.length === 0 ? (
             <div className="assessment-empty-state">
               <FileText size={28} />
               <h3>No completed reports yet</h3>
@@ -1695,47 +1693,37 @@ function ReportsView() {
 
 function GovernanceView() {
   const [tab, setTab] = useState('Framework versions');
-  const [versions, setVersions] = useState<Array<Record<string, unknown>>>([]);
-  const [proposals, setProposals] = useState<Array<Record<string, unknown>>>(
-    []
+  const governanceQuery = useQuery({
+    queryKey: ['governance-overview'],
+    enabled: liveApiEnabled,
+    queryFn: () =>
+      Promise.allSettled([
+        api.frameworkVersions('page_size=100'),
+        api.frameworkProposals('page_size=100'),
+        api.auditEvents('page_size=20'),
+        api.verifyAuditChain(),
+      ]),
+  });
+  const [versionResult, proposalResult, auditResult, integrityResult] =
+    governanceQuery.data ?? [];
+  const versions =
+    versionResult?.status === 'fulfilled' ? versionResult.value.results : [];
+  const proposals =
+    proposalResult?.status === 'fulfilled' ? proposalResult.value.results : [];
+  const audit =
+    auditResult?.status === 'fulfilled' ? auditResult.value.results : [];
+  const integrity =
+    integrityResult?.status === 'fulfilled' ? integrityResult.value : null;
+  const failedResult = governanceQuery.data?.find(
+    (result) => result.status === 'rejected'
   );
-  const [audit, setAudit] = useState<Array<Record<string, unknown>>>([]);
-  const [integrity, setIntegrity] = useState<Record<string, unknown> | null>(
-    null
-  );
-  const [loadError, setLoadError] = useState('');
-
-  useEffect(() => {
-    if (!liveApiEnabled) return;
-    Promise.allSettled([
-      api.frameworkVersions('page_size=100'),
-      api.frameworkProposals('page_size=100'),
-      api.auditEvents('page_size=20'),
-      api.verifyAuditChain(),
-    ]).then(([versionResult, proposalResult, auditResult, integrityResult]) => {
-      if (versionResult.status === 'fulfilled')
-        setVersions(versionResult.value.results);
-      if (proposalResult.status === 'fulfilled')
-        setProposals(proposalResult.value.results);
-      if (auditResult.status === 'fulfilled')
-        setAudit(auditResult.value.results);
-      if (integrityResult.status === 'fulfilled')
-        setIntegrity(integrityResult.value);
-      const failure = [
-        versionResult,
-        proposalResult,
-        auditResult,
-        integrityResult,
-      ].find((result) => result.status === 'rejected');
-      if (failure?.status === 'rejected') {
-        setLoadError(
-          failure.reason instanceof Error
-            ? failure.reason.message
-            : 'Governance data could not be loaded.'
-        );
-      }
-    });
-  }, []);
+  const loadError =
+    governanceQuery.error?.message ??
+    (failedResult?.status === 'rejected'
+      ? failedResult.reason instanceof Error
+        ? failedResult.reason.message
+        : 'Governance data could not be loaded.'
+      : '');
 
   const activeVersion =
     versions.find((item) => item.status === 'published') ?? versions[0];
@@ -1784,6 +1772,10 @@ function GovernanceView() {
         <div className="inline-error">
           <AlertCircle size={15} /> {loadError}
         </div>
+      ) : null}
+
+      {governanceQuery.isPending ? (
+        <LoadingSkeleton label="Loading governance data" rows={4} />
       ) : null}
 
       {activeVersion ? (
