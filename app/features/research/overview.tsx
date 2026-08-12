@@ -7,11 +7,12 @@ import {
   Sparkles,
   Users,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router';
 import { api } from '~/lib/api/soaird-client';
 import { useAuth } from '~/lib/auth/use-auth';
 import { useWorkspace } from '~/features/workspaces/workspace-context';
+import { CardGridSkeleton } from '~/components/loading-indicator';
 
 type DashboardSummary = {
   datasets: number;
@@ -64,42 +65,31 @@ export function OverviewDashboard() {
   const { user } = useAuth();
   const { scopeQuery } = useWorkspace();
   const firstName = user?.first_name || 'Researcher';
-  const [summary, setSummary] = useState(emptySummary);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    let active = true;
-
-    Promise.all([
-      api.datasets(scopeQuery('page_size=1')),
-      api.assessments(scopeQuery('page_size=1')),
-      api.reviewAssignments('page_size=1&status=active'),
-      api.cohortAnalytics('domain', scopeQuery()),
-    ])
-      .then(([datasets, assessments, assignments, analytics]) => {
-        if (!active) return;
-        setSummary({
-          datasets: datasets.count,
-          assessments: assessments.count,
-          reviewAssignments: assignments.count,
-          completedAssessments: analytics.population.completed_assessments,
-          assessmentCompletion:
-            analytics.population.assessment_completion.median,
-          evidenceCoverage: analytics.population.evidence_coverage.median,
-        });
-      })
-      .catch((reason: Error) => {
-        if (active) setError(reason.message);
-      })
-      .finally(() => {
-        if (active) setLoading(false);
-      });
-
-    return () => {
-      active = false;
-    };
-  }, [scopeQuery]);
+  const scope = scopeQuery();
+  const summaryQuery = useQuery({
+    queryKey: ['overview-summary', scope],
+    queryFn: async () => {
+      const [datasets, assessments, assignments, analytics] = await Promise.all(
+        [
+          api.datasets(scopeQuery('page_size=1')),
+          api.assessments(scopeQuery('page_size=1')),
+          api.reviewAssignments('page_size=1&status=active'),
+          api.cohortAnalytics('domain', scope),
+        ]
+      );
+      return {
+        datasets: datasets.count,
+        assessments: assessments.count,
+        reviewAssignments: assignments.count,
+        completedAssessments: analytics.population.completed_assessments,
+        assessmentCompletion: analytics.population.assessment_completion.median,
+        evidenceCoverage: analytics.population.evidence_coverage.median,
+      } satisfies DashboardSummary;
+    },
+  });
+  const summary = summaryQuery.data ?? emptySummary;
+  const loading = summaryQuery.isPending;
+  const error = summaryQuery.error?.message ?? '';
 
   const display = (value: number) => (loading ? '…' : String(value));
 
@@ -145,34 +135,38 @@ export function OverviewDashboard() {
         </div>
       ) : null}
 
-      <section className="stats-grid" aria-label="Research summary">
-        <StatCard
-          icon={Database}
-          value={display(summary.datasets)}
-          label="Registered datasets"
-          detail="Records currently accessible to you"
-        />
-        <StatCard
-          icon={BookOpenCheck}
-          value={display(summary.assessments)}
-          label="Assessments"
-          detail={`${display(summary.completedAssessments)} completed`}
-        />
-        <StatCard
-          icon={Users}
-          value={display(summary.reviewAssignments)}
-          label="Review assignments"
-          detail="Assignments currently accessible to you"
-        />
-        <StatCard
-          icon={CircleGauge}
-          value={loading ? '…' : percentage(summary.assessmentCompletion)}
-          label="Median completion"
-          detail={`Evidence coverage: ${
-            loading ? '…' : percentage(summary.evidenceCoverage)
-          }`}
-        />
-      </section>
+      {loading ? (
+        <CardGridSkeleton cards={4} label="Loading research summary" />
+      ) : (
+        <section className="stats-grid" aria-label="Research summary">
+          <StatCard
+            icon={Database}
+            value={display(summary.datasets)}
+            label="Registered datasets"
+            detail="Records currently accessible to you"
+          />
+          <StatCard
+            icon={BookOpenCheck}
+            value={display(summary.assessments)}
+            label="Assessments"
+            detail={`${display(summary.completedAssessments)} completed`}
+          />
+          <StatCard
+            icon={Users}
+            value={display(summary.reviewAssignments)}
+            label="Review assignments"
+            detail="Assignments currently accessible to you"
+          />
+          <StatCard
+            icon={CircleGauge}
+            value={loading ? '…' : percentage(summary.assessmentCompletion)}
+            label="Median completion"
+            detail={`Evidence coverage: ${
+              loading ? '…' : percentage(summary.evidenceCoverage)
+            }`}
+          />
+        </section>
+      )}
 
       <section className="dashboard-grid">
         <article className="panel readiness-panel">
@@ -187,7 +181,11 @@ export function OverviewDashboard() {
               ['1', 'Register a dataset', 'Capture ownership and provenance'],
               ['2', 'Create an assessment', 'Define context and applicability'],
               ['3', 'Run and review', 'Evaluate evidence across the framework'],
-              ['4', 'Report findings', 'Share transparent, versioned conclusions'],
+              [
+                '4',
+                'Report findings',
+                'Share transparent, versioned conclusions',
+              ],
             ].map(([number, title, detail]) => (
               <Link className="pillar-row" to="/datasets" key={number}>
                 <span className="pillar-number">{number}</span>

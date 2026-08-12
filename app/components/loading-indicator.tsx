@@ -1,29 +1,73 @@
 import { Loader2 } from 'lucide-react';
+import { useIsFetching, useIsMutating } from '@tanstack/react-query';
 import { useNavigation } from 'react-router';
 import { useEffect, useState } from 'react';
 
 export function LoadingIndicator() {
   const navigation = useNavigation();
+  const fetching = useIsFetching();
+  const mutating = useIsMutating();
   const [show, setShow] = useState(false);
+  const active = navigation.state !== 'idle' || fetching > 0 || mutating > 0;
 
   useEffect(() => {
-    if (navigation.state === 'loading') {
-      // Delay showing the loading indicator to avoid flashing
-      const timer = setTimeout(() => setShow(true), 200);
+    if (active) {
+      // Avoid flashing for requests that complete almost instantly while still
+      // giving visible feedback for real network activity.
+      const timer = window.setTimeout(() => setShow(true), 150);
       return () => clearTimeout(timer);
-    } else {
-      setShow(false);
     }
-  }, [navigation.state]);
+
+    setShow(false);
+  }, [active]);
 
   if (!show) return null;
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50">
-      <div className="h-1 animate-progress bg-primary" />
-      <div className="absolute top-4 right-4 rounded-full border border-border bg-card p-3 shadow-lg">
-        <Loader2 className="h-5 w-5 animate-spin text-primary" />
+    <div className="global-loading-indicator" role="status" aria-live="polite">
+      <div className="global-loading-progress" aria-hidden="true" />
+      <div className="global-loading-message">
+        <Loader2 className="global-loading-spinner" aria-hidden="true" />
+        <span>
+          {navigation.state !== 'idle' ? 'Opening page…' : 'Loading data…'}
+        </span>
       </div>
+    </div>
+  );
+}
+
+export function LoadingSkeleton({
+  rows = 5,
+  label = 'Loading content',
+}: Readonly<{ rows?: number; label?: string }>) {
+  return (
+    <div className="loading-skeleton" role="status" aria-label={label}>
+      <span className="sr-only">{label}…</span>
+      {Array.from({ length: rows }, (_, index) => (
+        <div className="loading-skeleton-row" key={index} aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function CardGridSkeleton({
+  cards = 4,
+  label = 'Loading summary',
+}: Readonly<{ cards?: number; label?: string }>) {
+  return (
+    <div className="loading-card-grid" role="status" aria-label={label}>
+      <span className="sr-only">{label}…</span>
+      {Array.from({ length: cards }, (_, index) => (
+        <div className="loading-card" key={index} aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </div>
+      ))}
     </div>
   );
 }
