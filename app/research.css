@@ -438,6 +438,68 @@ button {
   background: rgba(6, 34, 43, 0.72);
 }
 
+.evaluation-checklist {
+  display: grid;
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.evaluation-checklist h3 {
+  margin: 0;
+  font-size: 13px;
+}
+
+.evaluation-checklist article {
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: rgba(3, 24, 32, 0.42);
+}
+
+.evaluation-checklist article > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.evaluation-checklist p,
+.evaluation-checklist small {
+  display: block;
+  margin: 7px 0 0;
+  color: var(--text-muted);
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.metric-input-form fieldset {
+  margin: 18px 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.metric-input-form legend {
+  padding: 0 6px;
+  color: var(--teal-soft);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.metric-input-form fieldset > p,
+.metric-input-form label > span,
+.metric-input-form label > small {
+  display: block;
+  margin: 0 0 6px;
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.metric-input-form label > small {
+  margin-top: 5px;
+  color: #f4c869;
+}
+
 @media (max-width: 1000px) {
   .source-panel {
     grid-template-columns: 1fr 1fr;
