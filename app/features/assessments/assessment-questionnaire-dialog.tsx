@@ -684,12 +684,10 @@ function MetricInputForm({
   onSaved: () => void;
   onAutomationQueued: () => void;
 }>) {
-  const inputRequirements = metric.input_requirements ?? [];
-  const providedInputs = metric.provided_inputs ?? {};
   const defaults = Object.fromEntries(
-    inputRequirements.map((requirement) => [
+    metric.input_requirements.map((requirement) => [
       requirement.key,
-      providedInputs[requirement.key]?.value ?? {},
+      metric.provided_inputs[requirement.key]?.value ?? {},
     ])
   );
   const form = useForm<MetricInputFormInput>({
@@ -720,13 +718,7 @@ function MetricInputForm({
           This is assessment context, not an interpretation. Saving it reruns
           every metric that depends on the supplied input.
         </p>
-        {inputRequirements.length === 0 ? (
-          <p>
-            No input fields are defined for this metric yet. Contact an
-            administrator if you expected to see a form here.
-          </p>
-        ) : null}
-        {inputRequirements.map((requirement) => (
+        {metric.input_requirements.map((requirement) => (
           <fieldset key={requirement.key}>
             <legend>{requirement.label}</legend>
             <p>{requirement.description}</p>
