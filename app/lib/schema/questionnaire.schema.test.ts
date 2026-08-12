@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   assessmentSourceSchema,
+  informationUnavailableSchema,
   metricAnswerSchema,
   metricInputSchema,
 } from './questionnaire.schema';
@@ -63,6 +64,16 @@ describe('assessment source schema', () => {
     ).toBe(true);
   });
 
+  it('accepts controlled URL import and expanded evidence categories', () => {
+    expect(
+      assessmentSourceSchema.safeParse({
+        source_type: 'consent_privacy',
+        ingestion_mode: 'import_url',
+        source_uri: 'https://example.org/consent.pdf',
+      }).success
+    ).toBe(true);
+  });
+
   it('requires a file or safe URL', () => {
     expect(
       assessmentSourceSchema.safeParse({
@@ -76,5 +87,19 @@ describe('assessment source schema', () => {
         source_uri: 'file:///private/data.csv',
       }).success
     ).toBe(false);
+  });
+});
+
+describe('information unavailable schema', () => {
+  it('requires a meaningful auditable reason', () => {
+    expect(
+      informationUnavailableSchema.safeParse({ reason: 'Unknown' }).success
+    ).toBe(false);
+    expect(
+      informationUnavailableSchema.safeParse({
+        reason:
+          'The dataset publisher did not release the collection instrument.',
+      }).success
+    ).toBe(true);
   });
 });
