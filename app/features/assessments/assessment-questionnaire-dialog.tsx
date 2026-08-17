@@ -84,6 +84,13 @@ const SOURCE_TYPES = [
   { value: 'other', label: 'Other supporting source' },
 ];
 
+const SOURCE_FORM_DEFAULTS: AssessmentSourceFormInput = {
+  source_type: 'dataset',
+  ingestion_mode: 'reference',
+  source_uri: '',
+  source_file: undefined,
+};
+
 export function AssessmentQuestionnaireDialog({
   runId,
   assessmentCode,
@@ -192,8 +199,11 @@ export function AssessmentQuestionnaireDialog({
 
   return (
     <Dialog open={Boolean(runId)} onOpenChange={onOpenChange}>
-      <DialogContent className="h-[94vh] max-h-[94vh] overflow-hidden p-0 sm:max-w-7xl">
-        <DialogHeader className="border-b border-border px-6 py-5">
+      <DialogContent className="flex h-[calc(100dvh-1rem)] max-h-[calc(100dvh-1rem)] flex-col gap-0 overflow-hidden p-0 sm:h-[94dvh] sm:max-h-[94dvh] sm:max-w-7xl">
+        <DialogHeader
+          className="border-b border-border px-6 py-5"
+          sticky={false}
+        >
           <div className="flex flex-wrap items-start justify-between gap-4 pr-8">
             <div>
               <DialogTitle>Assessment workbench</DialogTitle>
@@ -290,7 +300,7 @@ export function AssessmentQuestionnaireDialog({
             the unsupported or invalid file.
           </p>
         ) : null}
-        <div className="grid min-h-0 flex-1 md:grid-cols-[21rem_1fr]">
+        <div className="workbench-body grid min-h-0 flex-1 md:grid-cols-[21rem_1fr]">
           <aside className="flex min-h-0 flex-col border-r border-border bg-muted/30 p-4">
             <label className="table-search w-full">
               <Search size={16} />
@@ -381,7 +391,7 @@ function EmptyWorkbench() {
   );
 }
 
-function SourcePanel({
+export function SourcePanel({
   assessmentCode,
   sources,
   onAdded,
@@ -390,14 +400,10 @@ function SourcePanel({
   sources: AssessmentSource[];
   onAdded: () => void;
 }>) {
+  const [fileInputKey, setFileInputKey] = useState(0);
   const form = useForm<AssessmentSourceFormInput>({
     resolver: assessmentSourceResolver,
-    defaultValues: {
-      source_type: 'dataset',
-      ingestion_mode: 'reference',
-      source_uri: '',
-      source_file: undefined,
-    },
+    defaultValues: SOURCE_FORM_DEFAULTS,
   });
   const add = useMutation({
     mutationFn: (values: AssessmentSourceFormInput) => {
@@ -413,12 +419,11 @@ function SourcePanel({
       });
     },
     onSuccess: (source) => {
-      form.reset({
-        source_type: 'dataset',
-        ingestion_mode: 'reference',
-        source_uri: '',
-        source_file: undefined,
-      });
+      form.reset(SOURCE_FORM_DEFAULTS);
+      // Browsers do not allow file inputs to be controlled or cleared through
+      // React Hook Form state. Remounting it removes the selected file and its
+      // visible filename after the source has been accepted by the API.
+      setFileInputKey((value) => value + 1);
       if (source.processing_status === 'failed') {
         toastUtils.error(
           'Source added but not processed',
@@ -435,7 +440,11 @@ function SourcePanel({
     onError: showError('Source could not be added'),
   });
   return (
-    <div className="source-inventory">
+    <div
+      className="source-inventory"
+      role="region"
+      aria-label="Assessment sources"
+    >
       <Form {...form}>
         <form
           className="source-panel"
@@ -473,9 +482,11 @@ function SourcePanel({
                 <FormLabel>Upload file (optional)</FormLabel>
                 <FormControl>
                   <Input
+                    key={fileInputKey}
                     {...field}
                     value={undefined}
                     type="file"
+                    disabled={add.isPending}
                     onChange={(event) => onChange(event.target.files)}
                   />
                 </FormControl>
