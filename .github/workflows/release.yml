@@ -42,7 +42,7 @@ jobs:
 
       - name: Create Release PR or Publish Release
         id: changesets
-        uses: changesets/action@v1
+        uses: changesets/action@v2
         with:
           version: pnpm changeset:version
           # Private package — no npm publish step. Tag + GH Release is enough.
