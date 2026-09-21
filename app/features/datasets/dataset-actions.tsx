@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   CheckCircle2,
   Download,
@@ -83,6 +83,7 @@ export function DatasetActions({
         onCreated={onChanged}
       />
       <ImportTrackerDialog
+        key={activeWorkspace.id}
         open={importOpen}
         onOpenChange={setImportOpen}
         onCompleted={onChanged}
@@ -178,7 +179,7 @@ function RegisterDatasetDialog({
   );
 }
 
-function ImportTrackerDialog({
+export function ImportTrackerDialog({
   open,
   onOpenChange,
   onCompleted,
@@ -188,45 +189,65 @@ function ImportTrackerDialog({
   onCompleted: () => void;
 }>) {
   const { activeWorkspace } = useWorkspace();
+  const queryClient = useQueryClient();
   const [preview, setPreview] = useState<DatasetImportJob | null>(null);
+  const [resumeId, setResumeId] = useState<string | null>(null);
+  const [rowPage, setRowPage] = useState(1);
+  const storageKey = `soaird:tracker-import:${activeWorkspace.id}`;
+  useEffect(() => {
+    if (open && !preview) setResumeId(window.localStorage.getItem(storageKey));
+  }, [open, preview, storageKey]);
+  const jobId = preview?.id ?? resumeId;
   const completionNotified = useRef<string | null>(null);
   const form = useForm<DatasetImportInput>({
     resolver: datasetImportResolver,
     defaultValues: { file: undefined, sheet_name: 'Datasets' },
   });
   const trackedJob = useQuery({
-    queryKey: ['dataset-import', preview?.id],
-    queryFn: () => api.datasetImport(preview!.id),
-    enabled: Boolean(
-      preview && ['pending', 'running'].includes(preview.status)
-    ),
+    queryKey: ['dataset-import', jobId],
+    queryFn: () => api.datasetImport(jobId!),
+    enabled: Boolean(jobId && open),
     refetchInterval: (query) =>
       ['pending', 'running'].includes(
         (query.state.data as DatasetImportJob | undefined)?.status ??
           preview?.status ??
           ''
       )
-        ? 1500
+        ? 2500
         : false,
   });
   const job = trackedJob.data ?? preview;
+  const pendingTooLong =
+    job?.status === 'pending' &&
+    Boolean(job.confirmed_at) &&
+    trackedJob.dataUpdatedAt - Date.parse(job.confirmed_at!) > 60000;
   const previewMutation = useMutation({
     mutationFn: (values: DatasetImportInput) =>
       api.previewDatasetImport({
         ...values,
         organization: activeWorkspace.personal ? null : activeWorkspace.id,
       }),
-    onSuccess: setPreview,
+    onSuccess: (job) => {
+      setPreview(job);
+      setResumeId(job.id);
+      setRowPage(1);
+      queryClient.setQueryData(['dataset-import', job.id], job);
+      window.localStorage.setItem(storageKey, job.id);
+    },
     onError: (error) => applyApiErrors(error, form.setError),
   });
   const confirm = useMutation({
     mutationFn: (id: string) => api.confirmDatasetImport(id),
     onSuccess: ({ job: confirmed }) => {
       setPreview(confirmed);
-      toastUtils.info(
-        'Import started',
-        'Valid rows are being added to the registry.'
-      );
+      setResumeId(confirmed.id);
+      window.localStorage.setItem(storageKey, confirmed.id);
+      queryClient.setQueryData(['dataset-import', confirmed.id], confirmed);
+      if (confirmed.status !== 'failed')
+        toastUtils.info(
+          'Import started',
+          'Valid rows are being added to the registry.'
+        );
     },
     onError: (error) =>
       toastUtils.error(
@@ -238,14 +259,23 @@ function ImportTrackerDialog({
   });
 
   useEffect(() => {
-    if (job?.status !== 'completed' || completionNotified.current === job.id)
+    if (!job || completionNotified.current === `${job.id}:${job.status}`)
       return;
-    completionNotified.current = job.id;
-    toastUtils.success(
-      'Tracker imported',
-      `${job.summary.imported ?? 0} datasets were added.`
-    );
-    onCompleted();
+    if (job.status === 'completed') {
+      completionNotified.current = `${job.id}:${job.status}`;
+      toastUtils.success(
+        'Tracker imported',
+        `${job.summary.imported ?? 0} datasets were added.`
+      );
+      onCompleted();
+    } else if (job.status === 'failed') {
+      completionNotified.current = `${job.id}:${job.status}`;
+      toastUtils.error(
+        'Tracker import failed',
+        job.errors.at(-1)?.message ||
+          'The import worker could not complete the tracker.'
+      );
+    }
   }, [job, onCompleted]);
 
   const rowsWithIssues = useMemo(
@@ -258,6 +288,9 @@ function ImportTrackerDialog({
 
   const reset = () => {
     setPreview(null);
+    setResumeId(null);
+    setRowPage(1);
+    window.localStorage.removeItem(storageKey);
     completionNotified.current = null;
     form.reset({ file: undefined, sheet_name: 'Datasets' });
   };
@@ -267,12 +300,11 @@ function ImportTrackerDialog({
       open={open}
       onOpenChange={(next) => {
         if (previewMutation.isPending || confirm.isPending) return;
-        if (!next) reset();
         onOpenChange(next);
       }}
     >
       <DialogContent
-        className="max-h-[90vh] overflow-y-auto sm:max-w-3xl"
+        className="max-h-[90vh] overflow-y-auto sm:max-w-4xl"
         disableOutsideClose
       >
         <DialogHeader>
@@ -283,6 +315,37 @@ function ImportTrackerDialog({
             imported until you confirm the preview.
           </DialogDescription>
         </DialogHeader>
+        <ol className="import-steps" aria-label="Import progress">
+          <li className={!job ? 'active' : ''}>
+            <span>1</span>Choose tracker
+          </li>
+          <li className={job?.status === 'previewed' ? 'active' : ''}>
+            <span>2</span>Review rows
+          </li>
+          <li className={job && job.status !== 'previewed' ? 'active' : ''}>
+            <span>3</span>Import datasets
+          </li>
+        </ol>
+        {trackedJob.isError && (
+          <div className="report-notice" role="alert">
+            <div>
+              <strong>Import status could not be loaded</strong>
+              <p>{trackedJob.error.message}</p>
+              <Button
+                variant="outline"
+                onClick={() => void trackedJob.refetch()}
+              >
+                Refresh status
+              </Button>
+              <Button variant="outline" onClick={reset}>
+                Choose another tracker
+              </Button>
+            </div>
+          </div>
+        )}
+        {resumeId && !job && trackedJob.isPending ? (
+          <p role="status">Loading your previous import…</p>
+        ) : null}
         {!job ? (
           <Form {...form}>
             <form
@@ -291,8 +354,24 @@ function ImportTrackerDialog({
                 previewMutation.mutate(values)
               )}
             >
-              <div className="rounded-md border bg-muted/30 p-4 text-sm">
-                <strong>Supported columns</strong>
+              <div className="import-guide">
+                <strong>Start with a clean tracker</strong>
+                <ol>
+                  <li>
+                    Put column headings in the first row, with one dataset per
+                    row.
+                  </li>
+                  <li>
+                    Include a <b>Dataset name</b> column. Add modality, country
+                    and domain to make assessment and cohort filtering easier.
+                  </li>
+                  <li>
+                    For Excel, use a sheet named <b>Datasets</b> or enter its
+                    name below. A workbook with one sheet is detected
+                    automatically.
+                  </li>
+                </ol>
+                <strong>Optional columns</strong>
                 <p className="mt-1 text-muted-foreground">
                   Dataset name (required), domain, country, region, geographic
                   scope, modality, hosting platform, accessibility, metadata
@@ -337,11 +416,11 @@ function ImportTrackerDialog({
                 control={form.control}
                 name="sheet_name"
                 label="Excel worksheet name"
-                required
                 placeholder="Datasets"
               />
               <p className="text-xs text-muted-foreground">
-                The worksheet name is ignored for CSV files.
+                Ignored for CSV. Export CSV as UTF-8; comma, semicolon and tab
+                separators are supported. Maximum 10,000 data rows.
               </p>
               {previewMutation.error ? (
                 <p className="inline-error">{previewMutation.error.message}</p>
@@ -385,23 +464,83 @@ function ImportTrackerDialog({
               <Summary label="Duplicates" value={job.summary.duplicate} />
               <Summary label="Imported" value={job.summary.imported} />
             </div>
-            {rowsWithIssues.length ? (
-              <div className="max-h-52 overflow-auto rounded-md border">
-                {rowsWithIssues.map((row) => (
-                  <div
-                    className="border-b p-3 text-sm last:border-0"
-                    key={row.id}
-                  >
-                    <strong>
-                      Row {row.row_number}: {row.status}
-                    </strong>
-                    <p className="text-muted-foreground">
-                      {row.errors.map((item) => item.message).join(' ') ||
-                        'This dataset already exists or is repeated in the tracker.'}
-                    </p>
-                  </div>
-                ))}
+            <p className="text-sm text-muted-foreground">
+              {job.status === 'completed'
+                ? `${job.summary.imported ?? 0} ${job.summary.imported === 1 ? 'dataset' : 'datasets'} added. Invalid and duplicate rows were skipped.`
+                : 'Only valid rows will be imported. Invalid and duplicate rows are skipped; existing datasets are not overwritten.'}
+              {job.sheet_name ? ` Worksheet: ${job.sheet_name}.` : ''}
+            </p>
+            <div className="import-preview-table">
+              <table className="report-table">
+                <thead>
+                  <tr>
+                    <th>Row</th>
+                    <th>Dataset</th>
+                    <th>Modality</th>
+                    <th>Status / guidance</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {job.rows
+                    .slice((rowPage - 1) * 50, rowPage * 50)
+                    .map((row) => (
+                      <tr key={row.id}>
+                        <td>{row.row_number}</td>
+                        <td>
+                          {String(
+                            row.normalized_data.name || 'Missing dataset name'
+                          )}
+                        </td>
+                        <td>
+                          {String(
+                            row.normalized_data.modality || 'Not specified'
+                          )}
+                        </td>
+                        <td>
+                          <strong className={`import-row-status ${row.status}`}>
+                            {row.status}
+                          </strong>
+                          <span>
+                            {row.errors.map((item) => item.message).join(' ') ||
+                              (row.status === 'duplicate'
+                                ? 'Already registered or repeated in this tracker.'
+                                : '')}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+            {job.rows.length > 50 && (
+              <div className="report-pagination">
+                <Button
+                  variant="outline"
+                  disabled={rowPage === 1}
+                  onClick={() => setRowPage(rowPage - 1)}
+                >
+                  Previous rows
+                </Button>
+                <span>
+                  Page {rowPage} of {Math.ceil(job.rows.length / 50)}
+                </span>
+                <Button
+                  variant="outline"
+                  disabled={rowPage * 50 >= job.rows.length}
+                  onClick={() => setRowPage(rowPage + 1)}
+                >
+                  Next rows
+                </Button>
               </div>
+            )}
+            {rowsWithIssues.length ? (
+              <Button
+                variant="outline"
+                onClick={() => downloadImportIssues(rowsWithIssues)}
+              >
+                <Download size={14} />
+                Download row issues ({rowsWithIssues.length})
+              </Button>
             ) : null}
             {job.errors.map((error) => (
               <p className="inline-error" key={error.message}>
@@ -409,13 +548,32 @@ function ImportTrackerDialog({
               </p>
             ))}
             {['pending', 'running'].includes(job.status) ? (
-              <p className="inline-loading">
-                Importing valid rows… Keep the Celery worker running.
-              </p>
+              <div className="import-progress" role="status">
+                <strong>
+                  {job.status === 'pending'
+                    ? 'Your import is queued.'
+                    : 'Your datasets are being registered.'}
+                </strong>
+                <p>
+                  You can close this window. Reopen Import tracker to check
+                  progress.
+                </p>
+                {pendingTooLong && (
+                  <p>
+                    This is taking longer than expected. You can retry safely;
+                    duplicate records will not be created.
+                  </p>
+                )}
+              </div>
             ) : null}
             <DialogFooter>
-              {job.status === 'previewed' ? (
-                <Button type="button" variant="outline" onClick={reset}>
+              {['previewed', 'completed', 'failed'].includes(job.status) ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={reset}
+                  disabled={confirm.isPending}
+                >
                   Choose another file
                 </Button>
               ) : null}
@@ -434,9 +592,17 @@ function ImportTrackerDialog({
                 >
                   {confirm.isPending
                     ? 'Starting import…'
-                    : `Import ${job.summary.valid ?? 0} valid rows`}
+                    : `Import ${job.summary.valid ?? 0} ${job.summary.valid === 1 ? 'dataset' : 'datasets'}`}
                 </Button>
               ) : null}
+              {(job.status === 'failed' || pendingTooLong) && (
+                <Button
+                  disabled={confirm.isPending}
+                  onClick={() => confirm.mutate(job.id)}
+                >
+                  {confirm.isPending ? 'Retrying…' : 'Retry import'}
+                </Button>
+              )}
             </DialogFooter>
           </div>
         )}
@@ -494,4 +660,32 @@ function downloadTrackerTemplate() {
   anchor.download = 'soaird-dataset-tracker-template.csv';
   anchor.click();
   URL.revokeObjectURL(url);
+}
+
+function downloadImportIssues(rows: DatasetImportJob['rows']) {
+  const cell = (value: unknown) => {
+    const text = String(value ?? '');
+    const safe = /^[=+@-]/.test(text.trimStart()) ? `'${text}` : text;
+    return `"${safe.replaceAll('"', '""')}"`;
+  };
+  const csv = [
+    ['row', 'dataset_name', 'status', 'guidance'],
+    ...rows.map((row) => [
+      row.row_number,
+      row.normalized_data.name,
+      row.status,
+      row.errors.map((item) => item.message).join(' ') ||
+        'Already registered or repeated in this tracker.',
+    ]),
+  ]
+    .map((row) => row.map(cell).join(','))
+    .join('\r\n');
+  const url = URL.createObjectURL(
+    new Blob([csv], { type: 'text/csv;charset=utf-8' })
+  );
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = 'soaird-tracker-row-issues.csv';
+  anchor.click();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 }

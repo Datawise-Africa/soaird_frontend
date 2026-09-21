@@ -1,9 +1,6 @@
-import axios, {
-  type AxiosError,
-  type InternalAxiosRequestConfig,
-} from 'axios';
+import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios';
 import { env } from '~/lib/env';
-import { store } from '~/store';
+import { persistor, store } from '~/store';
 import { clearAuth, setToken } from '~/store/slices/auth-slice';
 
 const isDev = import.meta.env.DEV;
@@ -47,6 +44,28 @@ apiClient.interceptors.request.use(
 
 type RetryableRequest = InternalAxiosRequestConfig & { _retry?: boolean };
 let refreshRequest: Promise<string> | null = null;
+let sessionExpiryRedirect: Promise<void> | null = null;
+
+async function expireSessionAndRedirect(): Promise<void> {
+  if (!sessionExpiryRedirect) {
+    sessionExpiryRedirect = (async () => {
+      store.dispatch(clearAuth());
+      await persistor.flush();
+
+      if (typeof window !== 'undefined') {
+        const current = `${window.location.pathname}${window.location.search}`;
+        const loginPath = current.startsWith('/auth/login')
+          ? '/auth/login'
+          : `/auth/login?redirectTo=${encodeURIComponent(current)}`;
+        window.location.replace(loginPath);
+      }
+    })().finally(() => {
+      sessionExpiryRedirect = null;
+    });
+  }
+
+  return sessionExpiryRedirect;
+}
 
 async function refreshAccessToken(): Promise<string> {
   if (!refreshRequest) {
@@ -108,10 +127,10 @@ apiClient.interceptors.response.use(
         request.headers.Authorization = `Bearer ${access}`;
         return apiClient(request);
       } catch {
-        store.dispatch(clearAuth());
+        await expireSessionAndRedirect();
       }
     } else if (error.response?.status === 401 && !isAuthEndpoint) {
-      store.dispatch(clearAuth());
+      await expireSessionAndRedirect();
     }
 
     return Promise.reject(error);

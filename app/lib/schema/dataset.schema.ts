@@ -41,11 +41,20 @@ export type DatasetRegistrationInput = z.infer<
 >;
 
 export const datasetImportSchema = z.object({
-  file: z.custom<File>(
-    (value) => typeof File !== 'undefined' && value instanceof File,
-    'Choose a CSV, XLSX or XLSM tracker file'
-  ),
-  sheet_name: z.string().trim().min(1, 'Worksheet name is required').max(255),
+  file: z
+    .custom<File>(
+      (value) => typeof File !== 'undefined' && value instanceof File,
+      'Choose a CSV, XLSX or XLSM tracker file'
+    )
+    .refine(
+      (file) => !file || file.size <= 25 * 1024 * 1024,
+      'Tracker files may not exceed 25 MB.'
+    )
+    .refine(
+      (file) => !file || /\.(csv|xlsx|xlsm)$/i.test(file.name),
+      'Choose a CSV, XLSX or XLSM tracker file.'
+    ),
+  sheet_name: z.string().trim().max(255),
 });
 
 export const datasetImportResolver = zodResolver(datasetImportSchema);

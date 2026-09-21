@@ -80,7 +80,10 @@ const SOURCE_TYPES = [
   { value: 'community_review', label: 'Community/stakeholder review' },
   { value: 'institutional_capacity', label: 'Institutional capacity' },
   { value: 'sustainability', label: 'Sustainability plan' },
-  { value: 'experiment_results', label: 'Learnability experiment results' },
+  {
+    value: 'experiment_results',
+    label: 'AI learnability / experiment results (Pillar 8)',
+  },
   { value: 'other', label: 'Other supporting source' },
 ];
 
@@ -129,6 +132,13 @@ export function AssessmentQuestionnaireDialog({
       ) ?? [],
     [questionnaire.data?.metrics]
   );
+  useEffect(() => {
+    setSelectedId(null);
+    setSearch('');
+    setFilter('all');
+    setShowSources(false);
+    setExecutionQueued(false);
+  }, [runId]);
   useEffect(() => {
     if (!selectedId && metrics.length) setSelectedId(metrics[0].id);
   }, [metrics, selectedId]);
@@ -206,7 +216,25 @@ export function AssessmentQuestionnaireDialog({
         >
           <div className="flex flex-wrap items-start justify-between gap-4 pr-8">
             <div>
-              <DialogTitle>Assessment workbench</DialogTitle>
+              <DialogTitle>
+                Assessment workbench
+                <span className="workbench-dataset-title">
+                  {questionnaire.data?.assessment.dataset_name ||
+                    (questionnaire.isPending
+                      ? 'Loading dataset…'
+                      : assessmentCode)}
+                </span>
+              </DialogTitle>
+              <div className="workbench-context">
+                <span>
+                  {questionnaire.data?.assessment.modality ||
+                    'Modality not specified'}
+                </span>
+                <span>
+                  {questionnaire.data?.assessment.dataset_code ||
+                    assessmentCode}
+                </span>
+              </div>
               <DialogDescription>
                 The system drafts findings from dataset files and documentation.
                 Review exceptions instead of answering every metric from
@@ -405,6 +433,7 @@ export function SourcePanel({
     resolver: assessmentSourceResolver,
     defaultValues: SOURCE_FORM_DEFAULTS,
   });
+  const selectedSourceType = form.watch('source_type');
   const add = useMutation({
     mutationFn: (values: AssessmentSourceFormInput) => {
       const file =
@@ -497,6 +526,19 @@ export function SourcePanel({
           <Button type="submit" disabled={add.isPending}>
             {add.isPending ? 'Adding…' : 'Add source'}
           </Button>
+          {selectedSourceType === 'experiment_results' ? (
+            <div className="rounded-md border bg-muted/30 p-3 text-sm">
+              <strong>Pillar 8 evidence</strong>
+              <p>
+                Upload or link reproducible AI-task results such as a baseline
+                evaluation, learning curve, subgroup performance, robustness
+                test, feature/attribution stability result, or a report that
+                records the model configuration, split and evaluation metric.
+                This source type supplies the learnability-results evidence used
+                by Pillar 8 qualitative interpretation metrics.
+              </p>
+            </div>
+          ) : null}
           <p>
             Direct profiling supports CSV, JSON and image ZIP archives. Text
             extraction supports PDF, DOCX, TXT, Markdown, CSV, JSON and YAML.
