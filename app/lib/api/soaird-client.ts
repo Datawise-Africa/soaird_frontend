@@ -85,12 +85,6 @@ export type DatasetImportJob = {
   sheet_name: string;
   status: 'previewed' | 'pending' | 'running' | 'completed' | 'failed';
   summary: {
-    automation_status:
-      | 'not_started'
-      | 'queued'
-      | 'running'
-      | 'completed'
-      | 'failed';
     total?: number;
     valid?: number;
     invalid?: number;
@@ -164,6 +158,8 @@ export type Assessment = {
   status: 'draft' | 'in_progress' | 'ready_for_review' | 'completed';
   dataset_code: string;
   dataset_name: string;
+  dataset_modality?: string;
+  dataset_country?: string;
   organization: string | null;
   dataset_version: string | null;
   framework_version: string;
@@ -378,7 +374,14 @@ export type QuestionnaireMetric = {
 
 export type AssessmentQuestionnaire = {
   run: AssessmentRun;
-  assessment: { assessment_code: string; title: string; status: string };
+  assessment: {
+    assessment_code: string;
+    title: string;
+    status: string;
+    dataset_code?: string;
+    dataset_name?: string;
+    modality?: string;
+  };
   progress: { answered: number; total: number };
   workbench: {
     automation_status:
@@ -409,6 +412,11 @@ export type AssessmentReport = {
     run_code: string;
     dataset_code: string;
     dataset_name: string;
+    modality?: string;
+    country?: string;
+    region?: string;
+    domain?: string;
+    scoring_version?: string;
     framework: string;
     framework_version: string;
     completed_at: string | null;
@@ -436,6 +444,7 @@ export type AssessmentReport = {
     pillar_code: string;
     pillar_name: string;
     effective_score: number | null;
+    scoring_coverage_percentage?: number;
   }>;
   metrics: Array<{
     pillar_code: string;
@@ -473,12 +482,54 @@ export type AssessmentReport = {
   };
 };
 
-type DistributionSummary = {
+export type DistributionSummary = {
   count: number;
   mean: number | null;
   median: number | null;
   minimum: number | null;
   maximum: number | null;
+};
+
+export type ReportOverview = Omit<AssessmentReport, 'metrics'>;
+export type CohortStatistics = DistributionSummary & { suppressed: boolean };
+export type CohortReport = {
+  generated_at: string;
+  filters: Record<string, string>;
+  group_by: string;
+  minimum_cohort_size: number;
+  comparable: boolean;
+  framework_versions: Array<{
+    framework: string;
+    version: string;
+    scoring_version: string;
+  }>;
+  population: {
+    candidate_datasets: number;
+    dataset_count: number;
+    excluded_provisional: number;
+    final_count: number;
+    provisional_count: number;
+    publishable_count: number;
+    withheld_count: number;
+    readiness: CohortStatistics;
+    evidence_coverage: CohortStatistics;
+    scoring_coverage: CohortStatistics;
+    assessment_completion: CohortStatistics;
+  };
+  readiness_distribution: Record<string, number> | null;
+  groups: Array<{
+    label: string;
+    dataset_count: number;
+    statistics: CohortStatistics;
+  }>;
+  pillars: Array<{
+    pillar_code: string;
+    pillar_name: string;
+    statistics: CohortStatistics;
+  }>;
+  datasets: ReportOverview[];
+  insights: string[];
+  methodology: string[];
 };
 
 export type CohortAnalytics = {
@@ -822,6 +873,30 @@ export const api = {
     return get<CohortAnalytics>(
       queryPath('/api/v1/reporting/analytics/cohorts/', params.toString())
     );
+  },
+
+  datasetReports(query = '') {
+    return get<Paginated<ReportOverview>>(
+      queryPath('/api/v1/reporting/datasets/', query)
+    );
+  },
+
+  cohortReport(query = '') {
+    return get<CohortReport>(queryPath('/api/v1/reporting/cohorts/', query));
+  },
+
+  async downloadCohortReport(query: string, format: 'json' | 'csv' | 'xlsx') {
+    const params = new URLSearchParams(query);
+    params.set('export_format', format);
+    try {
+      const response = await apiClient.get(
+        queryPath('/api/v1/reporting/cohorts/export/', params.toString()),
+        { responseType: 'blob' }
+      );
+      return response.data as Blob;
+    } catch (error) {
+      return normalizeError(error);
+    }
   },
 
   frameworkVersions(query = '') {

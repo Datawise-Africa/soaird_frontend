@@ -1,11 +1,9 @@
 import {
   AlertCircle,
   ArrowRight,
-  BarChart3,
   BookOpen,
   Check,
   CheckCircle2,
-  CircleGauge,
   CircleDot,
   Clock3,
   Database,
@@ -21,29 +19,24 @@ import {
   Plus,
   Search,
   ShieldCheck,
-  SlidersHorizontal,
   Sparkles,
   UserCheck,
   X,
 } from 'lucide-react';
-import { useQueries, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import { ApiError, api, liveApiEnabled } from '~/lib/api/soaird-client';
-import type {
-  Assessment as ApiAssessment,
-  AssessmentReport,
-} from '~/lib/api/soaird-client';
+import type { Assessment as ApiAssessment } from '~/lib/api/soaird-client';
 import { useEffect } from 'react';
 import { useWorkspace } from '~/features/workspaces/workspace-context';
+import ReportsView from '~/features/reports/reports-page';
+import { AssessmentPreviewDialog } from '~/features/assessments/assessment-preview-dialog';
 import { DatasetActions } from '~/features/datasets/dataset-actions';
 import { DatasetRecordDialog } from '~/features/datasets/dataset-record-dialog';
 import { AssessmentSetupDialog } from '~/features/assessments/assessment-setup-dialog';
 import { AssessmentDatasetDialog } from '~/features/assessments/assessment-dataset-dialog';
 import { AssessmentQuestionnaireDialog } from '~/features/assessments/assessment-questionnaire-dialog';
-import {
-  CardGridSkeleton,
-  LoadingSkeleton,
-} from '~/components/loading-indicator';
+import { LoadingSkeleton } from '~/components/loading-indicator';
 
 type View =
   | 'overview'
@@ -105,62 +98,6 @@ function EmptyScore({ score }: Readonly<{ score: number | null }>) {
   );
 }
 
-type ReportExportFormat = 'json' | 'csv' | 'xlsx';
-
-const PILLAR_NAMES: Record<string, string> = {
-  P1: 'Technical quality',
-  P2: 'Metadata & provenance',
-  P3: 'Representativeness',
-  P4: 'Ethics & privacy',
-  P5: 'Cultural relevance',
-  P6: 'Infrastructure & usability',
-  P7: 'Freshness & versioning',
-  P8: 'AI impact & learnability',
-  P9: 'Governance & sustainability',
-};
-
-async function downloadReport(
-  runId: string,
-  filename: string,
-  format: ReportExportFormat
-) {
-  const blob = await api.downloadAssessmentReport(runId, format);
-  const href = URL.createObjectURL(blob);
-  const anchor = document.createElement('a');
-  anchor.href = href;
-  anchor.download = `${filename}.${format}`;
-  anchor.click();
-  URL.revokeObjectURL(href);
-}
-
-function ReportExportActions({
-  runId,
-  filename,
-}: Readonly<{ runId: string; filename: string }>) {
-  return (
-    <div className="report-export-actions" aria-label="Export report">
-      {(['json', 'csv', 'xlsx'] as const).map((format) => (
-        <button
-          type="button"
-          className="button secondary"
-          key={format}
-          onClick={() => downloadReport(runId, filename, format)}
-          title={
-            format === 'json'
-              ? 'Complete machine-readable research record'
-              : format === 'csv'
-                ? 'Flat metric table for analysis'
-                : 'Readable multi-sheet Excel workbook'
-          }
-        >
-          <Download size={14} />{' '}
-          {format === 'xlsx' ? 'Excel' : format.toUpperCase()}
-        </button>
-      ))}
-    </div>
-  );
-}
-
 export default function WorkspaceView({ view }: Readonly<{ view: View }>) {
   if (view === 'datasets') return <DatasetsView />;
   if (view === 'assessments') return <AssessmentsView />;
@@ -174,6 +111,18 @@ function DatasetsView() {
   const { scopeQuery, activeWorkspace } = useWorkspace();
   const [query, setQuery] = useState('');
   const [domain, setDomain] = useState('All domains');
+  const [page, setPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState('');
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setSearchTerm(query);
+      setPage(1);
+    }, 300);
+    return () => window.clearTimeout(timer);
+  }, [query]);
+  useEffect(() => {
+    setPage(1);
+  }, [activeWorkspace.id]);
   const [selected, setSelected] = useState<DatasetRecord | null>(null);
   const [detailCode, setDetailCode] = useState<string | null>(null);
   const [assessmentDatasetCode, setAssessmentDatasetCode] = useState<
@@ -185,7 +134,13 @@ function DatasetsView() {
       (role) => role === 'admin' || role === 'research_lead'
     );
 
-  const datasetScope = scopeQuery('page_size=100');
+  const datasetParams = new URLSearchParams({
+    page_size: '25',
+    page: String(page),
+  });
+  if (searchTerm) datasetParams.set('search', searchTerm);
+  if (domain !== 'All domains') datasetParams.set('domain', domain);
+  const datasetScope = scopeQuery(datasetParams.toString());
   const datasetsQuery = useQuery({
     queryKey: ['datasets', datasetScope],
     queryFn: () => api.datasets(datasetScope),
@@ -217,17 +172,7 @@ function DatasetsView() {
   const domainCount = new Set(
     records.map((item) => item.domain).filter(Boolean)
   ).size;
-  const filtered = useMemo(
-    () =>
-      records.filter(
-        (item) =>
-          (domain === 'All domains' || item.domain === domain) &&
-          `${item.name} ${item.country} ${item.owner}`
-            .toLowerCase()
-            .includes(query.toLowerCase())
-      ),
-    [query, domain, records]
-  );
+  const filtered = records;
 
   return (
     <>
@@ -295,7 +240,10 @@ function DatasetsView() {
           </label>
           <select
             value={domain}
-            onChange={(event) => setDomain(event.target.value)}
+            onChange={(event) => {
+              setDomain(event.target.value);
+              setPage(1);
+            }}
             aria-label="Filter by domain"
           >
             <option>All domains</option>
@@ -305,12 +253,6 @@ function DatasetsView() {
             <option>Mobility</option>
             <option>Language</option>
           </select>
-          <button className="tool-button">
-            <Filter size={15} /> More filters
-          </button>
-          <button className="tool-button compact" aria-label="Table options">
-            <SlidersHorizontal size={16} />
-          </button>
         </div>
 
         <div className="dataset-table" role="table" aria-label="Datasets">
@@ -377,8 +319,25 @@ function DatasetsView() {
 
         <div className="table-footer">
           <span>
-            Showing {filtered.length} of {totalRecords} datasets
+            Showing {filtered.length} of {totalRecords} matching datasets
           </span>
+          <div className="report-downloads">
+            <button
+              className="button secondary"
+              disabled={!datasetsQuery.data?.previous || loading}
+              onClick={() => setPage(page - 1)}
+            >
+              Previous
+            </button>
+            <span>Page {page}</span>
+            <button
+              className="button secondary"
+              disabled={!datasetsQuery.data?.next || loading}
+              onClick={() => setPage(page + 1)}
+            >
+              Next
+            </button>
+          </div>
         </div>
       </section>
 
@@ -481,7 +440,13 @@ function DatasetsView() {
 }
 
 function AssessmentsView() {
-  const { scopeQuery } = useWorkspace();
+  const { scopeQuery, activeWorkspace } = useWorkspace();
+  const [page, setPage] = useState(1);
+  useEffect(() => {
+    setPage(1);
+    setSelected(null);
+    setQuestionnaireRunId(null);
+  }, [activeWorkspace.id]);
   const queryClient = useQueryClient();
   const [tab, setTab] = useState('Active');
   const [datasetChooserOpen, setDatasetChooserOpen] = useState(false);
@@ -506,29 +471,41 @@ function AssessmentsView() {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
 
-  const assessmentScope = scopeQuery('page_size=100');
+  const assessmentStatus =
+    tab === 'Active'
+      ? 'active'
+      : tab === 'Completed'
+        ? 'completed'
+        : tab === 'Ready for review'
+          ? 'ready_for_review'
+          : '';
+  const assessmentScope = scopeQuery(
+    `page_size=20&page=${page}&status=${assessmentStatus}`
+  );
   const assessmentsQuery = useQuery({
     queryKey: ['assessments-workspace', assessmentScope],
     enabled: liveApiEnabled,
-    queryFn: async () => {
-      const [assessmentResponse, datasetResponse] = await Promise.all([
-        api.assessments(assessmentScope),
-        api.datasets(assessmentScope),
-      ]);
-      return { assessmentResponse, datasetResponse };
-    },
+    queryFn: async () => ({
+      assessmentResponse: await api.assessments(assessmentScope),
+    }),
   });
   const records = assessmentsQuery.data?.assessmentResponse.results ?? [];
-  const datasets = useMemo(
-    () => assessmentsQuery.data?.datasetResponse.results ?? [],
-    [assessmentsQuery.data]
-  );
   const datasetMap = useMemo(
     () =>
       Object.fromEntries(
-        datasets.map((dataset) => [dataset.dataset_code, dataset])
+        (assessmentsQuery.data?.assessmentResponse.results ?? []).map(
+          (assessment) => [
+            assessment.dataset_code,
+            {
+              dataset_code: assessment.dataset_code,
+              name: assessment.dataset_name,
+              modality: assessment.dataset_modality,
+              country: assessment.dataset_country,
+            },
+          ]
+        )
       ),
-    [datasets]
+    [assessmentsQuery.data]
   );
   const datasetsLoading = assessmentsQuery.isPending;
   const refetchAssessments = assessmentsQuery.refetch;
@@ -661,7 +638,7 @@ function AssessmentsView() {
           ['5', 'Completion', 'Accept conclusions'],
           ['6', 'Report', 'Explore and export'],
         ].map(([number, title, help], index) => (
-          <div key={number} className={index === 0 ? 'current' : ''}>
+          <div key={number} className="journey-step">
             <span>{number}</span>
             <p>
               <strong>{title}</strong>
@@ -681,11 +658,18 @@ function AssessmentsView() {
           (item) => (
             <button
               className={tab === item ? 'active' : ''}
-              onClick={() => setTab(item)}
+              onClick={() => {
+                setTab(item);
+                setPage(1);
+              }}
               key={item}
             >
               {item}
-              {item === 'Active' ? <span>{records.length}</span> : null}
+              {item === 'Active' && tab === 'Active' ? (
+                <span>
+                  {assessmentsQuery.data?.assessmentResponse.count ?? 0}
+                </span>
+              ) : null}
             </button>
           )
         )}
@@ -700,15 +684,7 @@ function AssessmentsView() {
               ? Math.round((run.current / run.total) * 100)
               : 0;
           const progress =
-            item.status === 'completed'
-              ? 100
-              : item.status === 'ready_for_review'
-                ? 85
-                : run?.status === 'completed'
-                  ? 60
-                  : run
-                    ? Math.min(50, 10 + Math.round(applicabilityProgress * 0.4))
-                    : 10;
+            run?.status === 'completed' ? 100 : applicabilityProgress;
           const status =
             run && ['queued', 'running', 'failed'].includes(run.status)
               ? `Applicability ${run.status.replaceAll('_', ' ')}`
@@ -720,9 +696,6 @@ function AssessmentsView() {
                   <FileCheck2 size={18} />
                 </span>
                 <Status>{status}</Status>
-                <button aria-label="Assessment options">
-                  <MoreHorizontal size={18} />
-                </button>
               </div>
               <p className="record-code">{item.assessment_code}</p>
               <h2>{dataset?.name ?? item.dataset_code}</h2>
@@ -731,12 +704,19 @@ function AssessmentsView() {
                   <MapPin size={13} /> {dataset?.country ?? 'Registry dataset'}
                 </span>
                 <span>
-                  <UserCheck size={13} /> Assessment owner
+                  <Layers3 size={13} />
+                  {dataset?.modality || 'Modality not specified'}
                 </span>
               </div>
               <div className="progress-header">
-                <span>Assessment progress</span>
-                <strong>{progress}%</strong>
+                <span>
+                  {item.status === 'completed'
+                    ? 'Assessment complete'
+                    : run?.status === 'completed'
+                      ? 'Applicability complete · Workbench ready'
+                      : 'Applicability check'}
+                </span>
+                <strong>{run ? `${progress}%` : 'Not started'}</strong>
               </div>
               <div className="progress-track">
                 <span style={{ width: `${progress}%` }} />
@@ -757,10 +737,10 @@ function AssessmentsView() {
             </article>
           );
         })}
-        {records.length === 0 && !message ? (
+        {records.length === 0 && !datasetsLoading && !message ? (
           <div className="assessment-empty-state">
             <FileCheck2 size={28} />
-            <h3>No assessments yet</h3>
+            <h3>No assessments in this view</h3>
             <p>Create an assessment from a registered dataset to begin.</p>
             <button className="button primary" onClick={beginAssessment}>
               Start assessment
@@ -775,204 +755,40 @@ function AssessmentsView() {
         </button>
       ) : null}
 
-      {selected ? (
-        <div
-          className="modal-layer"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="assessment-drawer-title"
-          aria-describedby="assessment-drawer-description"
-        >
+      {(assessmentsQuery.data?.assessmentResponse.count ?? 0) > 20 && (
+        <div className="report-pagination">
           <button
-            className="modal-scrim"
-            onClick={() => {
-              setSelected(null);
-            }}
-            aria-label="Close"
-          />
-          <aside className="record-drawer assessment-drawer">
-            <button
-              className="quick-close"
-              onClick={() => {
-                setSelected(null);
-              }}
-              aria-label="Close"
-            >
-              <X size={19} />
-            </button>
-            <header className="drawer-header">
-              <p className="record-code">{selected.assessment_code}</p>
-              <h2 id="assessment-drawer-title">
-                {datasetMap[selected.dataset_code]?.name ??
-                  selected.dataset_code}
-              </h2>
-              <p id="assessment-drawer-description" className="drawer-intro">
-                {report?.report_state === 'final'
-                  ? 'This final report keeps the overall conclusion, pillar results and supporting research trail together.'
-                  : report
-                    ? 'This provisional report shows the results available so far. Continue in the workbench to review findings, add evidence and complete the assessment.'
-                    : 'Run applicability, then use the workbench to add evidence, review findings and complete the assessment.'}
-              </p>
-            </header>
-
-            {selectedReportQuery.isPending &&
-            selectedRun?.status === 'completed' ? (
-              <LoadingSkeleton label="Loading assessment report" rows={4} />
-            ) : null}
-
-            {report ? (
-              <>
-                <Status>
-                  {report.report_state === 'final'
-                    ? 'Final report'
-                    : 'Provisional report'}
-                </Status>
-                <section className="assessment-summary-grid">
-                  <div>
-                    <span>Overall readiness</span>
-                    {report.summary.composite_score === null ? (
-                      <strong>Withheld</strong>
-                    ) : (
-                      <strong>
-                        {Math.round(report.summary.composite_score)}
-                        <small>/100</small>
-                      </strong>
-                    )}
-                  </div>
-                  <div>
-                    <span>Assessment complete</span>
-                    {report.summary.assessment_completion === null ? (
-                      <strong>Not available</strong>
-                    ) : (
-                      <strong>
-                        {Math.round(report.summary.assessment_completion)}
-                        <small>%</small>
-                      </strong>
-                    )}
-                  </div>
-                  <div>
-                    <span>Evidence coverage</span>
-                    {report.summary.evidence_coverage === null ? (
-                      <strong>Not available</strong>
-                    ) : (
-                      <strong>
-                        {Math.round(report.summary.evidence_coverage)}
-                        <small>%</small>
-                      </strong>
-                    )}
-                  </div>
-                </section>
-                <div className="drawer-section">
-                  <div className="drawer-heading">
-                    <h3>Nine readiness pillars</h3>
-                    <span>{report.summary.metric_count} metrics</span>
-                  </div>
-                  <div className="report-pillar-list">
-                    {report.pillars.map((pillar, index) => (
-                      <div key={pillar.pillar_code}>
-                        <span>{index + 1}</span>
-                        <p>
-                          <strong>{pillar.pillar_name}</strong>
-                          <small>{pillar.pillar_code}</small>
-                        </p>
-                        <i>
-                          <b
-                            style={{ width: `${pillar.effective_score ?? 0}%` }}
-                          />
-                        </i>
-                        <em
-                          title={
-                            pillar.effective_score === null
-                              ? 'Not scored'
-                              : undefined
-                          }
-                        >
-                          {pillar.effective_score === null
-                            ? '—'
-                            : Math.round(pillar.effective_score)}
-                        </em>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="method-note">
-                  <AlertCircle size={14} />
-                  {report.summary.score_warning ||
-                    'Accepted reviewer scores are shown where adjudication is complete; otherwise the automated score is clearly retained.'}
-                </div>
-              </>
-            ) : (
-              <section className="assessment-empty-state">
-                <CircleGauge size={28} />
-                <h3>
-                  {runState[selected.assessment_code]?.status === 'completed'
-                    ? 'Applicability check complete'
-                    : runState[selected.assessment_code]
-                      ? 'Applicability check in progress'
-                      : 'Ready to determine applicability'}
-                </h3>
-                <p>
-                  {runState[selected.assessment_code]?.status === 'completed'
-                    ? 'The framework has selected the relevant metrics. Open the workbench to add sources, run automated profiling and review only the findings that need attention.'
-                    : runState[selected.assessment_code]
-                      ? 'The framework is determining which checks apply. You can leave this page and return while processing continues.'
-                      : 'Run the framework applicability check first. This step does not calculate readiness scores.'}
-                </p>
-                {runState[selected.assessment_code] ? (
-                  <div className="progress-track">
-                    <span
-                      style={{
-                        width: `${
-                          runState[selected.assessment_code].total
-                            ? Math.round(
-                                (runState[selected.assessment_code].current /
-                                  runState[selected.assessment_code].total) *
-                                  100
-                              )
-                            : 8
-                        }%`,
-                      }}
-                    />
-                  </div>
-                ) : null}
-              </section>
-            )}
-
-            <footer className="drawer-actions" aria-label="Assessment actions">
-              {runState[selected.assessment_code]?.status === 'completed' ? (
-                <button
-                  className="button primary"
-                  onClick={() => openWorkbench(selected)}
-                >
-                  Open assessment workbench <ArrowRight size={16} />
-                </button>
-              ) : null}
-              {report ? (
-                <div className="drawer-export-block">
-                  <span>
-                    Export{' '}
-                    {report.report_state === 'final' ? 'final' : 'provisional'}{' '}
-                    report
-                  </span>
-                  <ReportExportActions
-                    runId={runState[selected.assessment_code].id}
-                    filename={`${selected.assessment_code}-${report.report_state}-report`}
-                  />
-                </div>
-              ) : runState[selected.assessment_code]?.status !== 'completed' ? (
-                <button
-                  className="button primary"
-                  disabled={busy || Boolean(runState[selected.assessment_code])}
-                  onClick={() => startRun(selected)}
-                >
-                  {busy ? 'Starting…' : 'Run applicability check'}{' '}
-                  <ArrowRight size={16} />
-                </button>
-              ) : null}
-            </footer>
-          </aside>
+            className="button secondary"
+            disabled={!assessmentsQuery.data?.assessmentResponse.previous}
+            onClick={() => setPage(page - 1)}
+          >
+            Previous assessments
+          </button>
+          <span>Page {page}</span>
+          <button
+            className="button secondary"
+            disabled={!assessmentsQuery.data?.assessmentResponse.next}
+            onClick={() => setPage(page + 1)}
+          >
+            Next assessments
+          </button>
         </div>
-      ) : null}
+      )}
+      <AssessmentPreviewDialog
+        assessment={selected}
+        dataset={selected ? datasetMap[selected.dataset_code] : undefined}
+        run={selectedRun}
+        report={report}
+        loading={
+          selectedReportQuery.isPending && selectedRun?.status === 'completed'
+        }
+        error={selectedReportQuery.error?.message}
+        busy={busy}
+        onClose={() => setSelected(null)}
+        onRetry={() => void selectedReportQuery.refetch()}
+        onStart={() => selected && void startRun(selected)}
+        onWorkbench={() => selected && openWorkbench(selected)}
+      />
 
       <section className="guidance-banner">
         <div className="guidance-icon">
@@ -986,13 +802,22 @@ function AssessmentsView() {
             governance and cultural considerations.
           </p>
         </div>
-        <button className="button secondary">Open context guide</button>
+        <details>
+          <summary className="button secondary">
+            Assessment context guide
+          </summary>
+          <p>
+            Describe the dataset’s modality, intended task, population and
+            collection period when setting up the assessment. In the workbench,
+            add the dataset and supporting documentation under Sources. Use each
+            metric’s requested inputs and evidence guidance to resolve missing
+            information.
+          </p>
+        </details>
       </section>
 
       <AssessmentDatasetDialog
         open={datasetChooserOpen}
-        datasets={datasets}
-        loading={datasetsLoading}
         onOpenChange={setDatasetChooserOpen}
         onSelect={(datasetCode) => {
           setDatasetChooserOpen(false);
@@ -1097,596 +922,6 @@ function ReviewsView() {
           </div>
         ) : null}
       </section>
-    </>
-  );
-}
-
-function ReportsView() {
-  const { scopeQuery } = useWorkspace();
-  const [group, setGroup] = useState('Domain');
-  const [selectedReport, setSelectedReport] = useState<AssessmentReport | null>(
-    null
-  );
-  const reportScope = scopeQuery();
-  const groupKey = group.toLowerCase() as
-    | 'country'
-    | 'region'
-    | 'domain'
-    | 'modality';
-  const analyticsQuery = useQuery({
-    queryKey: ['cohort-analytics', groupKey, reportScope],
-    queryFn: () => api.cohortAnalytics(groupKey, reportScope),
-  });
-  const reportIndexQuery = useQuery({
-    queryKey: ['report-assessments', reportScope],
-    queryFn: () => api.assessments(scopeQuery('page_size=100')),
-  });
-  const reportableAssessments =
-    reportIndexQuery.data?.results.filter(
-      (assessment) => assessment.latest_run
-    ) ?? [];
-  const reportQueries = useQueries({
-    queries: reportableAssessments.map((assessment) => ({
-      queryKey: ['assessment-report', assessment.latest_run!.id],
-      queryFn: () => api.assessmentReport(assessment.latest_run!.id),
-      staleTime: 1000 * 60 * 10,
-    })),
-  });
-  const analytics = analyticsQuery.data ?? null;
-  const analyticsError = analyticsQuery.error?.message ?? '';
-  const loading = analyticsQuery.isPending;
-  const assessmentReports = reportQueries.flatMap((query) => {
-    const report = query.data;
-    return report &&
-      (report.report_state === 'final' ||
-        report.summary.automation_status !== 'not_started')
-      ? [report]
-      : [];
-  });
-  const reportsLoading =
-    reportIndexQuery.isPending ||
-    reportQueries.some((query) => query.isPending);
-
-  const chartRows = (analytics?.cohorts ?? [])
-    .filter((item) => !item.suppressed && item.statistics?.median !== null)
-    .map((item) => ({
-      label: String(
-        item[group.toLowerCase() as keyof typeof item] ?? 'Unspecified'
-      ),
-      value: Math.round(item.statistics?.median ?? 0),
-      count: item.count,
-    }));
-  const population = analytics?.population;
-  const distribution = population?.readiness_distribution;
-  const distributionTotal = distribution
-    ? Object.values(distribution).reduce((total, value) => total + value, 0)
-    : 0;
-  const pillarRows = (analytics?.pillars ?? []).map((pillar) => {
-    const values = pillar.groups.flatMap((item) =>
-      !item.suppressed && item.statistics?.median !== null
-        ? [item.statistics!.median!]
-        : []
-    );
-    return {
-      code: pillar.pillar_code,
-      label: PILLAR_NAMES[pillar.pillar_code] ?? pillar.pillar_code,
-      value: values.length
-        ? Math.round(
-            values.reduce((sum, value) => sum + value, 0) / values.length
-          )
-        : null,
-    };
-  });
-
-  return (
-    <>
-      <PageHeader
-        eyebrow="Research analytics"
-        title="See where readiness is advancing—and where it is not"
-        description="Compare responsibly, disclose coverage and export analysis with the framework version attached."
-      />
-
-      {loading ? (
-        <CardGridSkeleton cards={4} label="Loading report insights" />
-      ) : null}
-
-      <section className="report-kpis">
-        <article>
-          <span>Completed assessments</span>
-          <strong>
-            {loading ? '…' : (population?.completed_assessments ?? 0)}
-          </strong>
-          <small>Latest completed run only</small>
-        </article>
-        <article>
-          <span>Assessment completion</span>
-          <strong>
-            {loading
-              ? '…'
-              : population?.assessment_completion.median === null ||
-                  population?.assessment_completion.median === undefined
-                ? '—'
-                : `${Math.round(population.assessment_completion.median)}%`}
-          </strong>
-          <small>Median across the selected population</small>
-        </article>
-        <article>
-          <span>Evidence coverage</span>
-          <strong>
-            {loading
-              ? '…'
-              : population?.evidence_coverage.median === null ||
-                  population?.evidence_coverage.median === undefined
-                ? '—'
-                : `${Math.round(population.evidence_coverage.median)}%`}
-          </strong>
-          <small>Median verified coverage</small>
-        </article>
-        <article>
-          <span>Median readiness</span>
-          <strong>
-            {loading
-              ? '…'
-              : population?.readiness.median === null ||
-                  population?.readiness.median === undefined
-                ? '—'
-                : `${Math.round(population.readiness.median)}/100`}
-          </strong>
-          <small>Publishable composite scores only</small>
-        </article>
-      </section>
-
-      <section className="reports-layout" aria-label="Cohort insights">
-        <article className="panel cohort-panel">
-          {analyticsError ? (
-            <div className="inline-error">
-              <AlertCircle size={15} /> {analyticsError}
-            </div>
-          ) : null}
-          <div className="panel-heading">
-            <div>
-              <p className="overline">Cohort comparison</p>
-              <h2>Median readiness by {group.toLowerCase()}</h2>
-            </div>
-            <select
-              aria-label="Group cohort comparison by"
-              value={group}
-              onChange={(event) => setGroup(event.target.value)}
-            >
-              <option>Domain</option>
-              <option>Region</option>
-              <option>Modality</option>
-            </select>
-          </div>
-          <div
-            className="cohort-chart"
-            aria-label={`Median readiness by ${group.toLowerCase()}`}
-          >
-            {chartRows.map((item) => (
-              <div key={item.label}>
-                <span className="cohort-label">
-                  {item.label}
-                  <small>{item.count} datasets</small>
-                </span>
-                <div className="cohort-bar-row">
-                  <div
-                    className="cohort-bar-track"
-                    role="img"
-                    aria-label={`${item.label}: median readiness ${item.value} out of 100 across ${item.count} datasets`}
-                  >
-                    <i style={{ width: `${item.value}%` }} />
-                  </div>
-                  <em>{item.value}/100</em>
-                </div>
-              </div>
-            ))}
-            {!loading && !analyticsError && chartRows.length === 0 ? (
-              <div className="assessment-empty-state">
-                <BarChart3 size={28} />
-                <h3>No publishable cohort results yet</h3>
-                <p>
-                  Complete enough assessments in a cohort to meet the privacy
-                  threshold before aggregate scores are displayed.
-                </p>
-              </div>
-            ) : null}
-          </div>
-          <p className="method-note">
-            <AlertCircle size={14} /> Only cohorts meeting the minimum sample
-            threshold of {analytics?.minimum_cohort_size ?? 3} are shown.
-          </p>
-        </article>
-        <article className="panel insight-visual-panel">
-          <div className="panel-heading">
-            <div>
-              <p className="overline">Readiness distribution</p>
-              <h2>How completed datasets are distributed</h2>
-            </div>
-          </div>
-          {distributionTotal ? (
-            <>
-              <div
-                className="distribution-bar"
-                aria-label="Readiness distribution"
-              >
-                {[
-                  ['high', distribution?.highly_ready ?? 0],
-                  ['moderate', distribution?.moderately_ready ?? 0],
-                  ['emerging', distribution?.emerging ?? 0],
-                  ['limited', distribution?.limited_readiness ?? 0],
-                ].map(([tone, count]) => (
-                  <i
-                    className={String(tone)}
-                    key={String(tone)}
-                    style={{
-                      width: `${(Number(count) / distributionTotal) * 100}%`,
-                    }}
-                  />
-                ))}
-              </div>
-              <div className="distribution-legend">
-                <span>
-                  <i className="high" /> Highly ready{' '}
-                  <b>{distribution?.highly_ready}</b>
-                </span>
-                <span>
-                  <i className="moderate" /> Moderately ready{' '}
-                  <b>{distribution?.moderately_ready}</b>
-                </span>
-                <span>
-                  <i className="emerging" /> Emerging{' '}
-                  <b>{distribution?.emerging}</b>
-                </span>
-                <span>
-                  <i className="limited" /> Limited{' '}
-                  <b>{distribution?.limited_readiness}</b>
-                </span>
-              </div>
-            </>
-          ) : (
-            <div className="assessment-empty-state compact-empty">
-              <CircleGauge size={25} />
-              <p>
-                Distribution appears when publishable final scores are
-                available.
-              </p>
-            </div>
-          )}
-          <p className="interpretation-copy">
-            This view counts the latest completed, publishable assessment for
-            each dataset. Withheld scores are excluded.
-          </p>
-        </article>
-      </section>
-
-      <section className="panel pillar-landscape-panel">
-        <div className="panel-heading">
-          <div>
-            <p className="overline">Cross-dataset insight</p>
-            <h2>Readiness landscape across nine pillars</h2>
-          </div>
-          <span>Publishable cohorts only</span>
-        </div>
-        <div className="pillar-landscape">
-          {pillarRows.map((pillar) => (
-            <div key={pillar.code}>
-              <span>
-                <b>{pillar.code}</b>
-                {pillar.label}
-              </span>
-              <i>
-                <b style={{ width: `${pillar.value ?? 0}%` }} />
-              </i>
-              <em>{pillar.value === null ? '—' : pillar.value}</em>
-            </div>
-          ))}
-        </div>
-        <p className="method-note">
-          <AlertCircle size={14} /> Values summarize visible cohort medians;
-          suppressed groups are never included.
-        </p>
-      </section>
-
-      <section className="data-panel dataset-report-section">
-        <div className="panel-heading">
-          <div>
-            <p className="overline">Dataset-level research</p>
-            <h2>Single-dataset reports</h2>
-          </div>
-          <span>{assessmentReports.length} available</span>
-        </div>
-        <div className="assessment-grid">
-          {assessmentReports.map((report) => (
-            <article
-              className="assessment-card dataset-report-card"
-              key={report.assessment.run_code}
-            >
-              <div className="assessment-card-top">
-                <span className="assessment-icon">
-                  <BarChart3 size={18} />
-                </span>
-                <Status>
-                  {report.report_state === 'final' ? 'Final' : 'Provisional'}
-                </Status>
-              </div>
-              <p className="record-code">{report.assessment.assessment_code}</p>
-              <h2>{report.assessment.dataset_name}</h2>
-              <section className="assessment-summary-grid compact-summary">
-                <div>
-                  <span>Readiness</span>
-                  <strong>
-                    {report.summary.composite_score === null
-                      ? 'Withheld'
-                      : Math.round(report.summary.composite_score)}
-                    {report.summary.composite_score === null ? null : (
-                      <small>/100</small>
-                    )}
-                  </strong>
-                </div>
-                <div>
-                  <span>Evidence</span>
-                  <strong>
-                    {Math.round(report.summary.evidence_coverage ?? 0)}
-                    <small>%</small>
-                  </strong>
-                </div>
-                <div>
-                  <span>Scoring coverage</span>
-                  <strong>
-                    {Math.round(report.summary.scoring_coverage)}
-                    <small>%</small>
-                  </strong>
-                </div>
-              </section>
-              {report.summary.score_warning ? (
-                <p className="method-note">
-                  <AlertCircle size={14} /> {report.summary.score_warning}
-                </p>
-              ) : null}
-              <div className="assessment-footer report-card-footer">
-                <span className="report-framework">
-                  Framework {report.assessment.framework_version}
-                </span>
-                <button
-                  type="button"
-                  className="button primary report-insights-button"
-                  onClick={() => setSelectedReport(report)}
-                >
-                  View report insights <ArrowRight size={15} />
-                </button>
-                <ReportExportActions
-                  runId={report.assessment.run_id}
-                  filename={`${report.assessment.assessment_code}-${report.report_state}-report`}
-                />
-              </div>
-            </article>
-          ))}
-          {reportsLoading ? (
-            <LoadingSkeleton label="Loading dataset reports" rows={3} />
-          ) : null}
-          {!reportsLoading && assessmentReports.length === 0 ? (
-            <div className="assessment-empty-state">
-              <FileText size={28} />
-              <h3>No completed reports yet</h3>
-              <p>
-                Run assessment automation to create a provisional report. It
-                becomes final after every applicable metric has a researcher
-                disposition.
-              </p>
-            </div>
-          ) : null}
-        </div>
-      </section>
-      {selectedReport ? (
-        <section
-          className="data-panel report-detail-panel"
-          aria-labelledby="selected-report-title"
-        >
-          <div className="panel-heading report-detail-heading">
-            <div>
-              <p className="overline">
-                {selectedReport.report_state} dataset report
-              </p>
-              <h2 id="selected-report-title">
-                {selectedReport.assessment.dataset_name}
-              </h2>
-              <p>
-                Assessment {selectedReport.assessment.assessment_code} ·
-                Framework {selectedReport.assessment.framework_version}
-              </p>
-            </div>
-            <button
-              type="button"
-              className="button secondary"
-              onClick={() => setSelectedReport(null)}
-            >
-              Close
-            </button>
-          </div>
-          <section
-            className="assessment-summary-grid report-detail-summary"
-            aria-label="Dataset report summary"
-          >
-            <div>
-              <span>Readiness</span>
-              <strong>
-                {selectedReport.summary.composite_score === null
-                  ? 'Withheld'
-                  : Math.round(selectedReport.summary.composite_score)}
-              </strong>
-            </div>
-            <div>
-              <span>Scoring coverage</span>
-              <strong>
-                {Math.round(selectedReport.summary.scoring_coverage)}
-                <small>%</small>
-              </strong>
-            </div>
-            <div>
-              <span>Unresolved</span>
-              <strong>{selectedReport.summary.unresolved_metric_count}</strong>
-            </div>
-          </section>
-          {selectedReport.summary.score_warning ? (
-            <p className="method-note">
-              <AlertCircle size={14} /> {selectedReport.summary.score_warning}
-            </p>
-          ) : null}
-          <article className="report-interpretation">
-            <span className="assessment-icon">
-              <Sparkles size={18} />
-            </span>
-            <div>
-              <p className="overline">Plain-language interpretation</p>
-              <h3>What this result means</h3>
-              <p>{selectedReport.insights.overview}</p>
-            </div>
-          </article>
-          <section className="outcome-insights-grid">
-            <article className="outcome-visual">
-              <div
-                className="outcome-donut"
-                style={
-                  {
-                    '--meets': selectedReport.insights.outcome_counts.meets,
-                    '--partial':
-                      selectedReport.insights.outcome_counts.partially_meets,
-                    '--fails':
-                      selectedReport.insights.outcome_counts.does_not_meet,
-                    '--insufficient':
-                      selectedReport.insights.outcome_counts
-                        .insufficient_evidence,
-                    '--total': Math.max(selectedReport.summary.metric_count, 1),
-                  } as React.CSSProperties
-                }
-              >
-                <strong>{selectedReport.summary.metric_count}</strong>
-                <span>metrics</span>
-              </div>
-              <div className="outcome-legend">
-                <span>
-                  <i className="meets" /> Meets{' '}
-                  <b>{selectedReport.insights.outcome_counts.meets}</b>
-                </span>
-                <span>
-                  <i className="partial" /> Partial{' '}
-                  <b>
-                    {selectedReport.insights.outcome_counts.partially_meets}
-                  </b>
-                </span>
-                <span>
-                  <i className="fails" /> Does not meet{' '}
-                  <b>{selectedReport.insights.outcome_counts.does_not_meet}</b>
-                </span>
-                <span>
-                  <i className="insufficient" /> Insufficient evidence{' '}
-                  <b>
-                    {
-                      selectedReport.insights.outcome_counts
-                        .insufficient_evidence
-                    }
-                  </b>
-                </span>
-                <span>
-                  <i className="unresolved" /> Unresolved{' '}
-                  <b>{selectedReport.insights.outcome_counts.unresolved}</b>
-                </span>
-              </div>
-            </article>
-            <article className="strength-gap-panel">
-              <div>
-                <h3>
-                  <CheckCircle2 size={16} /> Strongest assessed areas
-                </h3>
-                {selectedReport.insights.strengths.length ? (
-                  selectedReport.insights.strengths.map((item) => (
-                    <p key={item.pillar_code}>
-                      <b>
-                        {item.pillar_code} · {Math.round(item.score)}/100
-                      </b>
-                      {item.pillar_name}
-                    </p>
-                  ))
-                ) : (
-                  <p>
-                    No pillar has enough evidence for a strength statement yet.
-                  </p>
-                )}
-              </div>
-              <div>
-                <h3>
-                  <AlertCircle size={16} /> Priority gaps
-                </h3>
-                {selectedReport.insights.priority_gaps.length ? (
-                  selectedReport.insights.priority_gaps.map((item) => (
-                    <p key={item.pillar_code}>
-                      <b>
-                        {item.pillar_code} · {Math.round(item.score)}/100
-                      </b>
-                      {item.pillar_name}
-                    </p>
-                  ))
-                ) : (
-                  <p>
-                    No scored pillar currently falls below the priority
-                    threshold.
-                  </p>
-                )}
-              </div>
-            </article>
-          </section>
-          <div className="report-pillar-list">
-            {selectedReport.pillars.map((pillar, index) => (
-              <div key={pillar.pillar_code}>
-                <span>{index + 1}</span>
-                <p>
-                  <strong>{pillar.pillar_name}</strong>
-                  <small>{pillar.pillar_code}</small>
-                </p>
-                <i>
-                  <b style={{ width: `${pillar.effective_score ?? 0}%` }} />
-                </i>
-                <em>
-                  {pillar.effective_score === null
-                    ? '—'
-                    : Math.round(pillar.effective_score)}
-                </em>
-              </div>
-            ))}
-          </div>
-          <div className="data-table-shell">
-            <table>
-              <thead>
-                <tr>
-                  <th>Metric</th>
-                  <th>Finding</th>
-                  <th>Score</th>
-                  <th>Confidence</th>
-                </tr>
-              </thead>
-              <tbody>
-                {selectedReport.metrics.map((metric) => (
-                  <tr key={metric.metric_code}>
-                    <td>
-                      <strong>{metric.metric_code}</strong> {metric.metric_name}
-                    </td>
-                    <td>
-                      {metric.accepted_finding?.replaceAll('_', ' ') ??
-                        metric.status.replaceAll('_', ' ')}
-                    </td>
-                    <td>
-                      {metric.effective_score === null
-                        ? '—'
-                        : Math.round(metric.effective_score)}
-                    </td>
-                    <td>{metric.confidence.replaceAll('_', ' ')}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-      ) : null}
     </>
   );
 }

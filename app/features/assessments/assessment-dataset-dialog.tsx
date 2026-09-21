@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowRight, Database, Search } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 import {
@@ -10,39 +10,44 @@ import {
   DialogTitle,
 } from '~/components/ui/dialog';
 import { Input } from '~/components/ui/input';
-import type { Dataset } from '~/lib/api/soaird-client';
+import { api } from '~/lib/api/soaird-client';
+import { useQuery } from '@tanstack/react-query';
+import { useWorkspace } from '~/features/workspaces/workspace-context';
 
 export function AssessmentDatasetDialog({
   open,
-  datasets,
-  loading,
   onOpenChange,
   onSelect,
 }: Readonly<{
   open: boolean;
-  datasets: Dataset[];
-  loading: boolean;
   onOpenChange: (open: boolean) => void;
   onSelect: (datasetCode: string) => void;
 }>) {
   const [query, setQuery] = useState('');
-  const visibleDatasets = useMemo(() => {
-    const normalized = query.trim().toLowerCase();
-    if (!normalized) return datasets;
-    return datasets.filter((dataset) =>
-      [
-        dataset.name,
-        dataset.dataset_code,
-        dataset.domain,
-        dataset.country,
-        dataset.owner,
-      ]
-        .filter(Boolean)
-        .join(' ')
-        .toLowerCase()
-        .includes(normalized)
-    );
-  }, [datasets, query]);
+  const { scopeQuery } = useWorkspace();
+  const [page, setPage] = useState(1);
+  const [term, setTerm] = useState('');
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setTerm(query);
+      setPage(1);
+    }, 250);
+    return () => window.clearTimeout(timer);
+  }, [query]);
+  const params = new URLSearchParams({
+    page_size: '25',
+    page: String(page),
+    search: term,
+  });
+  const scope = scopeQuery(params.toString());
+  const datasetsQuery = useQuery({
+    queryKey: ['assessment-dataset-picker', scope],
+    queryFn: () => api.datasets(scope),
+    enabled: open,
+  });
+  const loading = datasetsQuery.isPending;
+  const datasets = datasetsQuery.data?.results ?? [];
+  const visibleDatasets = datasets;
 
   const close = () => {
     setQuery('');
@@ -121,6 +126,28 @@ export function AssessmentDatasetDialog({
           ))}
         </div>
 
+        {datasetsQuery.isError && (
+          <p role="alert">{datasetsQuery.error.message}</p>
+        )}
+        {(datasetsQuery.data?.count ?? 0) > 25 && (
+          <div className="report-pagination">
+            <Button
+              variant="outline"
+              disabled={!datasetsQuery.data?.previous}
+              onClick={() => setPage(page - 1)}
+            >
+              Previous
+            </Button>
+            <span>Page {page}</span>
+            <Button
+              variant="outline"
+              disabled={!datasetsQuery.data?.next}
+              onClick={() => setPage(page + 1)}
+            >
+              Next
+            </Button>
+          </div>
+        )}
         <DialogFooter>
           <Button type="button" variant="outline" onClick={close}>
             Cancel
